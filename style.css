@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Italianno&display=swap');
+
+
+* {
+    margin: 0;
+    padding: 0;
+   }
+
+.nav_bar{
+    background-color: #F4E9E3;
+    display: flex;
+    justify-content: space-between;
+    height: 70px;
+ 
+}
+
+#search {
+    margin-top: 22px;
+    max-width: 700px; /* kayn prblm hna */
+    height: 28px;
+    border-radius: 22px;
+    border: none;
+
+}
+
+.nav_bar_list{
+    margin-top: 25px;
+    width: 50%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+a {
+    color: #9D4B19;
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 19.24px;
+    line-height: 100%;
+    letter-spacing: 0%;
+}
+
+a:hover {
+    color: #461c03;
+    text-decoration: underline;
+}
+
+
+#basket{
+    list-style-image: url('basket.png');
+}
+
+.title{
+    margin: 50px;
+    font-family: 'Italianno', cursive;
+    font-weight: 400;
+    font-size: 68.47px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    text-align: center;
+}
+
+
+.about_us{
+    width: 80%;
+    display: flex;
+    justify-content: center;
+
+}
+
+
+.bold {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 28.71px;
+    line-height: 100%;
+    letter-spacing: 0%;
+
+}
+
+.about_us button{
+    width: 145;
+    height: 42;
+    gap: 10px;
+    border-radius: 20px;
+    border: none;
+    padding: 10px;
+    background-color: #9D4B19;
+    color: #F4E9E3;
+    font-family: Montserrat;
+    font-weight: 400;
+    font-size: 18.43px;
+    line-height: 100%;
+    letter-spacing: 0%;
+
+}
+
+.list{
+    margin-top: 25px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.footer{
+    background-color: #F4E9E3;
+}
+
+
+.inline{
+    display: flex;
+    justify-content: center;
+}
+
+li{
+    list-style: none;
+}
