@@ -17,12 +17,32 @@
 
 #search {
     margin-top: 22px;
-    max-width: 700px; /* kayn prblm hna */
+    max-width: 500px; /* kayn prblm hna */
     height: 28px;
     border-radius: 22px;
     border: none;
 
 }
+
+
+header button {
+    padding-top: 22px;
+    width:20px;     
+    height: 20px;
+    border: none;
+    background-color: #F4E9E3 ;
+}
+
+
+
+.logoImg{
+    padding-top: 12px;
+    padding-left: 6px;
+    width: fit-content; 
+    height: fit-content;
+}
+
+
 
 .nav_bar_list{
     margin-top: 25px;
@@ -63,10 +83,10 @@ a:hover {
 
 
 .about_us{
-    width: 80%;
     display: flex;
     justify-content: center;
-
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 
@@ -103,6 +123,8 @@ a:hover {
 }
 
 .footer{
+    margin-top: 20px;
+    padding: 5px 0 10px;
     background-color: #F4E9E3;
 }
 

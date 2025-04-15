@@ -1,0 +1,156 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #F4E9E3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.auth-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    width: 500px;
+    max-width: 90%;
+    padding: 40px;
+    transition: all 0.5s ease;
+    border: 1px solid #461c03;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-title {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #461c03;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.input-group {
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 6px;
+    color: #461c03;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.input-group input, .input-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #9D4B19;
+    border-radius: 5px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    background-color: #F4E9E3;
+}
+
+.input-group input:focus, .input-group select:focus {
+    border-color: #461c03;
+    box-shadow: 0 0 0 3px rgba(157, 75, 25, 0.3);
+    outline: none;
+}
+
+.name-row {
+    display: flex;
+    gap: 15px;
+}
+
+.name-row .input-group {
+    flex: 1;
+}
+
+.auth-button {
+    background-color: #9D4B19;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 15px;
+}
+
+.auth-button:hover {
+    background-color: #461c03;
+}
+
+/* Form Footer */
+.form-footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #461c03;
+}
+
+.form-footer a {
+    color: #9D4B19;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.form-footer a:hover {
+    text-decoration: underline;
+    color: #461c03;
+}
+
+/* Toggle between Sign In/Sign Up */
+.form-toggle {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #F4E9E3;
+}
+
+.toggle-btn {
+    background: none;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #9D4B19;
+    position: relative;
+}
+
+.toggle-btn.active {
+    color: #461c03;
+    font-weight: 600;
+}
+
+.toggle-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 20%;
+    width: 60%;
+    height: 2px;
+    background-color: #461c03;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 480px) {
+    .auth-container {
+        padding: 25px 15px;
+    }
+    .name-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}
