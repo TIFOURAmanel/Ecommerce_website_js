@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once('connection.php'); // File with db connection details
+require_once('connection.php'); // File with MySQL PDO connection
 
 // Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -22,20 +22,20 @@ function handleSignIn() {
     }
     
     // Check user credentials in database
-    $conn = getConnection();
-    $stmt = oci_parse($conn, "SELECT user_id, password_hash, first_name, is_admin FROM users WHERE email = :email");
-    oci_bind_by_name($stmt, ':email', $email);
-    oci_execute($stmt);
+    $pdo = getConnection();
+    $stmt = $pdo->prepare("SELECT user_id, password_hash, first_name, role_user FROM users WHERE email = ?");
+    $stmt->execute([$email]);
     
-    if ($user = oci_fetch_assoc($stmt)) {
-        if (password_verify($password, $user['PASSWORD_HASH'])) {
+    if ($user = $stmt->fetch()) {
+        if (password_verify($password, $user['password_hash'])) {
             // Successful login
-            $_SESSION['user_id'] = $user['USER_ID'];
+            $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['email'] = $email;
-            $_SESSION['first_name'] = $user['FIRST_NAME'];
-            $_SESSION['is_admin'] = $user['IS_ADMIN'];
+            $_SESSION['first_name'] = $user['first_name'];
+            $_SESSION['role_user'] = $user['role_user'];
             
             // Set "remember me" cookie if checked
+            /*
             if (isset($_POST['remember'])) {
                 $token = bin2hex(random_bytes(32));
                 $expiry = time() + 60*60*24*30; // 30 days
@@ -51,19 +51,17 @@ function handleSignIn() {
                 
                 // Store hashed token in database
                 $hashedToken = password_hash($token, PASSWORD_BCRYPT);
-                $updateStmt = oci_parse($conn, "UPDATE users SET remember_token = :token WHERE user_id = :user_id");
-                oci_bind_by_name($updateStmt, ':token', $hashedToken);
-                oci_bind_by_name($updateStmt, ':user_id', $user['USER_ID']);
-                oci_execute($updateStmt);
+                $updateStmt = $pdo->prepare("UPDATE users SET remember_token = ? WHERE user_id = ?");
+                $updateStmt->execute([$hashedToken, $user['user_id']]);
             }
+                */
             
-            header("Location: dashboard.php");
+            header("Location: landingPage.php");
             exit();
         }
     }
     
     $_SESSION['error'] = "Invalid email or password";
-    oci_close($conn);
 }
 
 function handleSignUp() {
@@ -73,7 +71,7 @@ function handleSignUp() {
     $lastName = htmlspecialchars($_POST['lastname']);
     $password = $_POST['password'];
     $confirmPassword = $_POST['confirm'];
-    $address = htmlspecialchars($_POST['address']);
+    $addresse = htmlspecialchars($_POST['addresse']);
     $city = htmlspecialchars($_POST['city']);
     $country = htmlspecialchars($_POST['country']);
     $phone = htmlspecialchars($_POST['phone']);
@@ -97,66 +95,58 @@ function handleSignUp() {
     // Hash password
     $passwordHash = password_hash($password, PASSWORD_BCRYPT);
     
-    // Call the Oracle procedure
-    $conn = getOracleConnection();
-    $stmt = oci_parse($conn, "BEGIN add_user(:email, :first_name, :last_name, :password_hash, :address, :city, :country, :phone, 0, :user_id, :status, :message); END;");
-    
-    // Bind parameters
-    oci_bind_by_name($stmt, ':email', $email);
-    oci_bind_by_name($stmt, ':first_name', $firstName);
-    oci_bind_by_name($stmt, ':last_name', $lastName);
-    oci_bind_by_name($stmt, ':password_hash', $passwordHash);
-    oci_bind_by_name($stmt, ':address', $address);
-    oci_bind_by_name($stmt, ':city', $city);
-    oci_bind_by_name($stmt, ':country', $country);
-    oci_bind_by_name($stmt, ':phone', $phone);
-    
-    // Bind output parameters
-    oci_bind_by_name($stmt, ':user_id', $userId, 32);
-    oci_bind_by_name($stmt, ':status', $status, 1);
-    oci_bind_by_name($stmt, ':message', $message, 200);
-    
-    oci_execute($stmt);
-    
-    if ($status == 1) {
+    // Insert new user (MySQL version)
+    $pdo = getConnection();
+    try {
+        $pdo->beginTransaction();
+        
+        $stmt = $pdo->prepare("INSERT INTO users (email, first_name, last_name, password_hash, addresse, city, country, phone, role_user) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'client')");
+        $stmt->execute([$email, $firstName, $lastName, $passwordHash, $addresse, $city, $country, $phone]);
+        
+        $userId = $pdo->lastInsertId();
+        $pdo->commit();
+        
         // Registration successful - log user in
         $_SESSION['user_id'] = $userId;
         $_SESSION['email'] = $email;
         $_SESSION['first_name'] = $firstName;
-        $_SESSION['is_admin'] = 0;
+        $_SESSION['role_user'] = 'client';
         
-        header("Location: dashboard.php");
+        header("Location: landingPage.php");
         exit();
-    } else {
-        $_SESSION['error'] = $message;
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        $_SESSION['error'] = "Registration failed: " . $e->getMessage(); // Affiche le message d'erreur complet
     }
     
-    oci_close($conn);
 }
 
 // Check for remember me cookie
+/*
 function checkRememberMe() {
     if (empty($_SESSION['user_id']) && isset($_COOKIE['remember_token'])) {
-        $conn = getOracleConnection();
-        $stmt = oci_parse($conn, "SELECT user_id, email, first_name, is_admin FROM users WHERE remember_token = :token");
+        $pdo = getConnection();
+        $stmt = $pdo->prepare("SELECT user_id, email, first_name, role FROM users WHERE remember_token = ?");
         
         $hashedToken = password_hash($_COOKIE['remember_token'], PASSWORD_BCRYPT);
-        oci_bind_by_name($stmt, ':token', $hashedToken);
-        oci_execute($stmt);
+        $stmt->execute([$hashedToken]);
         
-        if ($user = oci_fetch_assoc($stmt)) {
-            $_SESSION['user_id'] = $user['USER_ID'];
-            $_SESSION['email'] = $user['EMAIL'];
-            $_SESSION['first_name'] = $user['FIRST_NAME'];
-            $_SESSION['is_admin'] = $user['IS_ADMIN'];
+        if ($user = $stmt->fetch()) {
+            $_SESSION['user_id'] = $user['user_id'];
+            $_SESSION['email'] = $user['email'];
+            $_SESSION['first_name'] = $user['first_name'];
+            $_SESSION['role'] = $user['role'];
         }
-        
-        oci_close($conn);
     }
 }
 
 checkRememberMe();
+*/
+
+
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -177,7 +167,7 @@ checkRememberMe();
             <button class="toggle-btn" id="signup-toggle">Sign Up</button>
         </div>
 
-        <form class="auth-form" id="signin-form" method="POST" action="auth.php">
+        <form class="auth-form" id="signin-form" method="POST" action="">
             <input type="hidden" name="signin" value="1">
             <h2 class="auth-title">Welcome Back</h2>
             
@@ -203,7 +193,7 @@ checkRememberMe();
             </div>
         </form>
 
-        <form class="auth-form" id="signup-form" style="display: none;" method="POST" action="auth.php">
+        <form class="auth-form" id="signup-form" style="display: none;" method="POST" action="">
             <input type="hidden" name="signup" value="1">
             <h2 class="auth-title">Create Account</h2>
             
@@ -236,7 +226,7 @@ checkRememberMe();
             
             <div class="input-group">
                 <label for="signup-address">Address</label>
-                <input type="text" id="signup-address" name="address" placeholder="Enter your street address">
+                <input type="text" id="signup-address" name="addresse" placeholder="Enter your street address">
             </div>
             
             <div class="name-row">

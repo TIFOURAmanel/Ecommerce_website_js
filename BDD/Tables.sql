@@ -1,90 +1,77 @@
 
--- Create sequence for auto-incrementing IDs
-CREATE SEQUENCE user_id_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE category_id_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE product_id_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE order_id_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE order_items_id_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE shopping_carts_id_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE cart_items_id_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE cancelled_orders_id_seq START WITH 1 INCREMENT BY 1;
+-- ***************************************matensaych
+
+--Écrire une procédure qui permet d'afficher l'historique des commandes d'un client.
 
 
 CREATE TABLE users (
-    user_id NUMBER DEFAULT user_id_seq.NEXTVAL PRIMARY KEY,
-    email VARCHAR2(100) NOT NULL UNIQUE,
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(100) NOT NULL UNIQUE,
     first_name VARCHAR(50),
     last_name VARCHAR(50),
-    password_hash VARCHAR2(255) NOT NULL,
-    address VARCHAR2(255),
-    city VARCHAR2(50),
-    country VARCHAR2(50),
-    phone VARCHAR2(20),
-    is_admin NUMBER(1) DEFAULT 0 NOT NULL CHECK (is_admin IN (0, 1))
+    password_hash VARCHAR(255) NOT NULL,
+    addresse VARCHAR(255),
+    city VARCHAR(50),
+    country VARCHAR(50),
+    phone VARCHAR(20),
+    role_user ENUM('client', 'admin') DEFAULT 'client'
 );
 
 CREATE TABLE categories (
-    category_id NUMBER DEFAULT category_id_seq.NEXTVAL PRIMARY KEY,
-    name VARCHAR2(100) NOT NULL
-    );
-
+    category_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
 
 CREATE TABLE products (
-    product_id NUMBER DEFAULT product_id_seq.NEXTVAL PRIMARY KEY,
-    category_id NUMBER REFERENCES categories(category_id),
-    name VARCHAR2(100) NOT NULL,
-    description VARCHAR2(500),
-    price NUMBER(10, 4) NOT NULL CHECK (price >= 0),
-    stock_quantity NUMBER NOT NULL CHECK (stock_quantity >= 0),
-    image_url VARCHAR2(255)
+    product_id INT AUTO_INCREMENT PRIMARY KEY,
+    category_id INT,
+    name VARCHAR(100) NOT NULL,
+    description VARCHAR(500),
+    price DECIMAL(10, 4) NOT NULL CHECK (price >= 0),
+    stock_quantity INT NOT NULL CHECK (stock_quantity >= 0),
+    image_url VARCHAR(255),
+    FOREIGN KEY (category_id) REFERENCES categories(category_id)
 );
 
 CREATE TABLE orders (
-    order_id NUMBER DEFAULT order_id_seq.NEXTVAL PRIMARY KEY,
-    user_id NUMBER REFERENCES users(user_id),
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status VARCHAR2(20) DEFAULT 'pending' CHECK (status IN ('pending', 'processing', 'shipped', 'delivered', 'cancelled')),
-    address VARCHAR2(255) NOT NULL,
-    payment_method VARCHAR2(50) NOT NULL
+    address VARCHAR(255) NOT NULL,
+    payment_method VARCHAR(50) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE order_items (
-    order_item_id NUMBER DEFAULT order_items_id_seq.NEXTVAL PRIMARY KEY,
-    order_id NUMBER,              
-    product_id NUMBER,               
+    order_item_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT,              
+    product_id INT,               
     quantity INT CHECK (quantity >= 0),             
-    price NUMBER(10,4), 
     FOREIGN KEY (order_id) REFERENCES orders(order_id),
     FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
 
-
 CREATE TABLE shopping_carts (
-    cart_id NUMBER DEFAULT shopping_carts_id_seq.NEXTVAL PRIMARY KEY, 
-    user_id NUMBER REFERENCES users(user_id)
+    cart_id INT AUTO_INCREMENT PRIMARY KEY, 
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE cart_items (
-    cart_item_id NUMBER DEFAULT cart_items_id_seq.NEXTVAL PRIMARY KEY,
-    cart_id NUMBER,              
-    product_id NUMBER,               
+    cart_item_id INT AUTO_INCREMENT PRIMARY KEY,
+    cart_id INT,              
+    product_id INT,               
     quantity INT CHECK (quantity >= 0),             
-    price NUMBER(10,4), 
+    price DECIMAL(10,4), 
     FOREIGN KEY (cart_id) REFERENCES shopping_carts(cart_id),
     FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
 
 
--- Cancelled orders history
 CREATE TABLE cancelled_orders (
-    cancellation_id NUMBER DEFAULT cancelled_orders_id_seq.NEXTVAL PRIMARY KEY,
-    order_id NUMBER NOT NULL,
-    user_id NUMBER NOT NULL,
+    cancellation_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    user_id INT NOT NULL,
     FOREIGN KEY (order_id) REFERENCES orders(order_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
-
-
--- ***************************************matensaych
-
---Écrire une procédure qui permet d'afficher l'historique des commandes d'un client.

@@ -1,3 +1,75 @@
+<?php
+session_start();
+require_once('connection.php'); // Database connection file
+
+// Initialize variables
+$searchResults = [];
+$categoryFilter = '';
+$productFilter = '';
+
+// Handle search form submission
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && (isset($_GET['category_search']) || isset($_GET['product_search']))) {
+    $categoryFilter = isset($_GET['category_search']) ? trim($_GET['category_search']) : '';
+    $productFilter = isset($_GET['product_search']) ? trim($_GET['product_search']) : '';
+    
+    try {
+        $pdo = getConnection();
+        
+        // Build search query
+        $sql = "SELECT p.*, c.name as category_name 
+                FROM products p 
+                JOIN categories c ON p.category_id = c.id 
+                WHERE 1=1";
+        
+        $params = [];
+        
+        if (!empty($categoryFilter)) {
+            $sql .= " AND c.name LIKE ?";
+            $params[] = "%$categoryFilter%";
+        }
+        
+        if (!empty($productFilter)) {
+            $sql .= " AND p.name LIKE ?";
+            $params[] = "%$productFilter%";
+        }
+        
+        $sql .= " LIMIT 12"; // Limit results
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        $searchResults = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+    } catch (PDOException $e) {
+        error_log("Search error: " . $e->getMessage());
+        $_SESSION['error'] = "Error performing search. Please try again.";
+    }
+}
+
+// Get featured categories for catalog section
+$featuredCategories = [];
+try {
+    $pdo = getConnection();
+    $stmt = $pdo->query("SELECT id, name FROM categories WHERE featured = 1 LIMIT 3");
+    $featuredCategories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    error_log("Category fetch error: " . $e->getMessage());
+}
+
+// Get basket item count if user is logged in
+$basketCount = 0;
+if (isset($_SESSION['user_id'])) {
+    try {
+        $pdo = getConnection();
+        $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM cart_items WHERE user_id = ?");
+        $stmt->execute([$_SESSION['user_id']]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $basketCount = $result['count'];
+    } catch (PDOException $e) {
+        error_log("Basket count error: " . $e->getMessage());
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
