@@ -83,3 +83,8 @@ CREATE TABLE cancelled_orders (
     FOREIGN KEY (order_id) REFERENCES orders(order_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
+
+
+-- ***************************************matensaych
+
+--Écrire une procédure qui permet d'afficher l'historique des commandes d'un client.

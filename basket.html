@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Basket - Gateaux gourmands by Nada</title>
+    <link rel="stylesheet" href="basket.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Italianno&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo-link">
+                <img src="images/logo.png" alt="Gateaux gourmands logo" class="logo">
+            </a>
+            
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="index.html#home" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="index.html#catalog" class="nav-link">Catalog</a></li>
+                    <li class="nav-item"><a href="index.html#us" class="nav-link">About Us</a></li>
+                    <li class="nav-item basket">
+                        <a href="basket.html" class="nav-link active">Basket</a>
+                        <img src="images/basket.png" alt="Basket" class="basket-icon">
+                        <span class="basket-count">3</span>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="basket-section">
+            <h1 class="section-title">Your Basket</h1>
+            
+            <div class="basket-container">
+                <div class="basket-items">
+                    <!-- Basket Item 1 -->
+                    <div class="basket-item">
+                        <img src="images/cake1.jpg" alt="Traditional Cake" class="item-image">
+                        <div class="item-details">
+                            <h3 class="item-name">Traditional Almond Cake</h3>
+                            <p class="item-desc">Made with premium almonds and honey</p>
+                            <div class="item-controls">
+                                <button class="quantity-btn minus">-</button>
+                                <span class="quantity">1</span>
+                                <button class="quantity-btn plus">+</button>
+                            </div>
+                        </div>
+                        <div class="item-price">
+                            <span class="price">$24.99</span>
+                            <button class="remove-btn">Remove</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Basket Item 2 -->
+                    <div class="basket-item">
+                        <img src="images/cake2.jpg" alt="Modern Cake" class="item-image">
+                        <div class="item-details">
+                            <h3 class="item-name">Modern Chocolate Delight</h3>
+                            <p class="item-desc">Rich dark chocolate with raspberry filling</p>
+                            <div class="item-controls">
+                                <button class="quantity-btn minus">-</button>
+                                <span class="quantity">2</span>
+                                <button class="quantity-btn plus">+</button>
+                            </div>
+                        </div>
+                        <div class="item-price">
+                            <span class="price">$32.50</span>
+                            <button class="remove-btn">Remove</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="basket-summary">
+                    <h3 class="summary-title">Order Summary</h3>
+                    <div class="summary-details">
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span>$89.99</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Delivery</span>
+                            <span>$5.99</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total</span>
+                            <span>$95.98</span>
+                        </div>
+                    </div>
+                    <button class="checkout-btn">Proceed to Checkout</button>
+                    <a href="index.html#catalog" class="continue-shopping">Continue Shopping</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <h2 class="footer-title">Contact Us</h2>
+            <div class="contact-info">
+                <p class="phone-number">+213 (0) 657987786</p>
+                <div class="social-icons">
+                    <img src="images/instagram.png" alt="Instagram" class="social-icon">
+                    <!-- Add other social icons here -->
+                </div>
+            </div>
+            <div class="divider"></div>
+            <p class="copyright">© 2023 Gateaux gourmands by Nada. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="basket.js"></script>
+</body>
+</html>
