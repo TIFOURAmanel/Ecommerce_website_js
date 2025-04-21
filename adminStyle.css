@@ -134,10 +134,10 @@ body {
     font-size: 24px;
 }
 
-/* Tables Section */
+/* Tables Section - Modified to stack vertically */
 .tables {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 20px;
 }
 
@@ -146,6 +146,7 @@ body {
     border-radius: 5px;
     padding: 20px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 100%;
 }
 
 .table-header {
@@ -310,10 +311,6 @@ table th {
     .cards {
         grid-template-columns: repeat(2, 1fr);
     }
-    
-    .tables {
-        grid-template-columns: 1fr;
-    }
 }
 
 @media (max-width: 768px) {
@@ -353,5 +350,15 @@ table th {
     
     .user-info {
         margin-top: 10px;
+    }
+    
+    table th, table td {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+    
+    .action-btn {
+        padding: 3px 6px;
+        font-size: 12px;
     }
 }

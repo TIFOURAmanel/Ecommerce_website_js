@@ -35,7 +35,7 @@ function handleSignIn() {
             $_SESSION['role_user'] = $user['role_user'];
             
             // Set "remember me" cookie if checked
-            
+            /*
             if (isset($_POST['remember'])) {
                 $token = bin2hex(openssl_random_pseudo_bytes(32));
                 $expiry = time() + 60*60*24*30; // 30 days
@@ -54,9 +54,13 @@ function handleSignIn() {
                 $updateStmt = $pdo->prepare("UPDATE users SET remember_token = ? WHERE user_id = ?");
                 $updateStmt->execute([$hashedToken, $user['user_id']]);
             }
+                */
                 
-            
-            header("Location: landingPage.php");
+            if ($user['role_user'] == "client"){
+                header("Location: landingPage.php");
+            } else if ($user['role_user'] == "admin"){
+                header("Location: adminPage.php");
+            }
             exit();
         }
     }
@@ -122,7 +126,7 @@ function handleSignUp() {
 }
 
 // Check for remember me cookie
-
+/*
 function checkRememberMe() {
     if (empty($_SESSION['user_id']) && isset($_COOKIE['remember_token'])) {
         $pdo = getConnection();
@@ -141,7 +145,7 @@ function checkRememberMe() {
 }
 
 checkRememberMe();
-
+*/
 
 
 ?>

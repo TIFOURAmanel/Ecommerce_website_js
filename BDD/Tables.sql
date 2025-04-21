@@ -19,14 +19,15 @@ CREATE TABLE users (
 
 CREATE TABLE categories (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL
+    name_categ VARCHAR(100) NOT NULL ,
+    description_categ VARCHAR(500)
 );
 
 CREATE TABLE products (
     product_id INT AUTO_INCREMENT PRIMARY KEY,
     category_id INT,
-    name VARCHAR(100) NOT NULL,
-    description VARCHAR(500),
+    name_prod VARCHAR(100) NOT NULL,
+    description_prod VARCHAR(500),
     price DECIMAL(10, 4) NOT NULL CHECK (price >= 0),
     stock_quantity INT NOT NULL CHECK (stock_quantity >= 0),
     image_url VARCHAR(255),
