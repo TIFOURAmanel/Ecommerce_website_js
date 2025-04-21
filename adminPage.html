@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="adminStyle.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-store-alt"></i>
+            <h3>Admin Panel</h3>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="active">
+                <a href="#">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="#products">
+                    <i class="fas fa-box-open"></i>
+                    <span>Products</span>
+                </a>
+            </li>
+            <li>
+                <a href="#categories">
+                    <i class="fas fa-list"></i>
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="#orders">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Orders</span>
+                </a>
+            </li>
+            <li>
+                <a href="#users">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+            </li>
+            <li>
+                <a href="#settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h2>Dashboard</h2>
+            <div class="user-info">
+                <img src="https://via.placeholder.com/40" alt="User">
+                <span>Admin User</span>
+            </div>
+        </div>
+
+        <!-- Cards Section -->
+        <div class="cards">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Total Products</h3>
+                    <i class="fas fa-box-open"></i>
+                </div>
+                <div class="card-body">
+                    <h2>124</h2>
+                    <p>+12 this week</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3>Total Categories</h3>
+                    <i class="fas fa-list"></i>
+                </div>
+                <div class="card-body">
+                    <h2>8</h2>
+                    <p>+1 this month</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3>Total Orders</h3>
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="card-body">
+                    <h2>356</h2>
+                    <p>+24 today</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3>Total Revenue</h3>
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="card-body">
+                    <h2>$12,345</h2>
+                    <p>+$1,234 this week</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tables Section -->
+        <div class="tables">
+            <div class="table-card">
+                <div class="table-header">
+                    <h3>Products</h3>
+                    <button class="btn" id="add-product-btn">Add Product</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Premium Coffee Beans</td>
+                            <td>Coffee</td>
+                            <td>$12.99</td>
+                            <td>45</td>
+                            <td><span class="status active">Active</span></td>
+                            <td>
+                                <button class="action-btn edit-btn">Edit</button>
+                                <button class="action-btn delete-btn">Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Organic Green Tea</td>
+                            <td>Tea</td>
+                            <td>$8.99</td>
+                            <td>32</td>
+                            <td><span class="status active">Active</span></td>
+                            <td>
+                                <button class="action-btn edit-btn">Edit</button>
+                                <button class="action-btn delete-btn">Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Chocolate Croissant</td>
+                            <td>Pastry</td>
+                            <td>$3.50</td>
+                            <td>0</td>
+                            <td><span class="status inactive">Out of Stock</span></td>
+                            <td>
+                                <button class="action-btn edit-btn">Edit</button>
+                                <button class="action-btn delete-btn">Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Iced Latte</td>
+                            <td>Drinks</td>
+                            <td>$4.50</td>
+                            <td>∞</td>
+                            <td><span class="status active">Active</span></td>
+                            <td>
+                                <button class="action-btn edit-btn">Edit</button>
+                                <button class="action-btn delete-btn">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-card">
+                <div class="table-header">
+                    <h3>Categories</h3>
+                    <button class="btn" id="add-category-btn">Add Category</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Products</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Coffee</td>
+                            <td>24</td>
+                            <td>
+                                <button class="action-btn edit-btn">Edit</button>
+                                <button class="action-btn delete-btn">Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Tea</td>
+                            <td>18</td>
+                            <td>
+                                <button class="action-btn edit-btn">Edit</button>
+                                <button class="action-btn delete-btn">Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Pastry</td>
+                            <td>32</td>
+                            <td>
+                                <button class="action-btn edit-btn">Edit</button>
+                                <button class="action-btn delete-btn">Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Drinks</td>
+                            <td>15</td>
+                            <td>
+                                <button class="action-btn edit-btn">Edit</button>
+                                <button class="action-btn delete-btn">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div class="modal" id="product-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Product</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="product-form">
+                <div class="form-group">
+                    <label for="product-name">Product Name</label>
+                    <input type="text" id="product-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="product-category">Category</label>
+                    <select id="product-category" required>
+                        <option value="">Select Category</option>
+                        <option value="1">Coffee</option>
+                        <option value="2">Tea</option>
+                        <option value="3">Pastry</option>
+                        <option value="4">Drinks</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="product-price">Price</label>
+                        <input type="number" id="product-price" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-stock">Stock</label>
+                        <input type="number" id="product-stock" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="product-description">Description</label>
+                    <textarea id="product-description" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="product-image">Image</label>
+                    <input type="file" id="product-image">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn close-btn">Cancel</button>
+                    <button type="submit" class="btn">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Category Modal -->
+    <div class="modal" id="category-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Category</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="category-form">
+                <div class="form-group">
+                    <label for="category-name">Category Name</label>
+                    <input type="text" id="category-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="category-description">Description</label>
+                    <textarea id="category-description" rows="3"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn close-btn">Cancel</button>
+                    <button type="submit" class="btn">Save Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Modal functionality
+        const productModal = document.getElementById('product-modal');
+        const categoryModal = document.getElementById('category-modal');
+        const addProductBtn = document.getElementById('add-product-btn');
+        const addCategoryBtn = document.getElementById('add-category-btn');
+        const closeBtns = document.querySelectorAll('.close-btn');
+
+        addProductBtn.addEventListener('click', () => {
+            productModal.style.display = 'flex';
+        });
+
+        addCategoryBtn.addEventListener('click', () => {
+            categoryModal.style.display = 'flex';
+        });
+
+        closeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                productModal.style.display = 'none';
+                categoryModal.style.display = 'none';
+            });
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === productModal) {
+                productModal.style.display = 'none';
+            }
+            if (e.target === categoryModal) {
+                categoryModal.style.display = 'none';
+            }
+        });
+
+        // Form submission
+        document.getElementById('product-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Here you would handle the form submission (AJAX or regular form submit)
+            alert('Product added successfully!');
+            productModal.style.display = 'none';
+        });
+
+        document.getElementById('category-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Here you would handle the form submission (AJAX or regular form submit)
+            alert('Category added successfully!');
+            categoryModal.style.display = 'none';
+        });
+
+        // Sidebar menu active state
+        const menuItems = document.querySelectorAll('.sidebar-menu li');
+        menuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                menuItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
