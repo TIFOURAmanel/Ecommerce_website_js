@@ -62,6 +62,7 @@ $totalOrders = $pdo->query("SELECT COUNT(*) FROM orders")->fetchColumn();
 $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items oi JOIN products p ON oi.product_id = p.product_id")->fetchColumn();
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -216,7 +217,7 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
                                 </span>
                             </td>
                             <td>
-                                <button class="action-btn edit-btn">Edit</button>
+                                
                                 <form method="POST" style="display:inline;">
                                     <input type="hidden" name="product_id" value="<?= $product['product_id'] ?>">
                                     <button type="submit" name="delete_product" class="action-btn delete-btn">Delete</button>
@@ -262,7 +263,7 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
                             <td><?= htmlspecialchars($category['description_categ']) ?></td>
                             <td><?= $category['product_count'] ?></td>
                             <td>
-                                <button class="action-btn edit-btn">Edit</button>
+                                
                                 <form method="POST" style="display:inline;">
                                     <input type="hidden" name="category_id" value="<?= $category['category_id'] ?>">
                                     <button type="submit" name="delete_category" class="action-btn delete-btn">Delete</button>
@@ -357,7 +358,7 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
                             <td><?= ucfirst($user['role_user']) ?></td>
                             <td><?= htmlspecialchars($user['city'] . ', ' . $user['country']) ?></td>
                             <td>
-                                <button class="action-btn edit-btn">Edit</button>
+                                
                                 <form method="POST" style="display:inline;">
                                     <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
                                     <button type="submit" name="delete_user" class="action-btn delete-btn">Delete</button>
