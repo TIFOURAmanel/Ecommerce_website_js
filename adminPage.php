@@ -6,13 +6,14 @@ $pdo = getConnection();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['add_product'])) {
         // Add product to database
-        $stmt = $pdo->prepare("INSERT INTO products (name_prod, category_id, price, stock_quantity, description_prod) VALUES (?, ?, ?, ?, ?)");
+        $stmt = $pdo->prepare("INSERT INTO products (name_prod, category_id, price, stock_quantity, description_prod , image_url) VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->execute([
             $_POST['product_name'],
             $_POST['product_category'],
             $_POST['product_price'],
             $_POST['product_stock'],
-            $_POST['product_description']
+            $_POST['product_description'],
+            $_POST['product_image']
         ]);
     }
     

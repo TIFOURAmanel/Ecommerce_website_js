@@ -28,7 +28,7 @@ CREATE TABLE products (
     category_id INT,
     name_prod VARCHAR(100) NOT NULL,
     description_prod VARCHAR(500),
-    price DECIMAL(10, 4) NOT NULL CHECK (price >= 0),
+    price DECIMAL(16, 4) NOT NULL CHECK (price >= 0),
     stock_quantity INT NOT NULL CHECK (stock_quantity >= 0),
     image_url VARCHAR(255),
     FOREIGN KEY (category_id) REFERENCES categories(category_id)

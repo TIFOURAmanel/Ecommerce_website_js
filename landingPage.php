@@ -3,70 +3,26 @@ session_start();
 require_once('connection.php'); // Database connection file
 
 // Initialize variables
-$searchResults = [];
-$categoryFilter = '';
-$productFilter = '';
+$selectedCategory = isset($_GET['category_id']) ? (int)$_GET['category_id'] : null;
+$products = [];
+$categories = [];
 
-// Handle search form submission
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && (isset($_GET['category_search']) || isset($_GET['product_search']))) {
-    $categoryFilter = isset($_GET['category_search']) ? trim($_GET['category_search']) : '';
-    $productFilter = isset($_GET['product_search']) ? trim($_GET['product_search']) : '';
-    
-    try {
-        $pdo = getConnection();
-        
-        // Build search query
-        $sql = "SELECT p.*, c.name as category_name 
-                FROM products p 
-                JOIN categories c ON p.category_id = c.id 
-                WHERE 1=1";
-        
-        $params = [];
-        
-        if (!empty($categoryFilter)) {
-            $sql .= " AND c.name LIKE ?";
-            $params[] = "%$categoryFilter%";
-        }
-        
-        if (!empty($productFilter)) {
-            $sql .= " AND p.name LIKE ?";
-            $params[] = "%$productFilter%";
-        }
-        
-        $sql .= " LIMIT 12"; // Limit results
-        
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($params);
-        $searchResults = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-    } catch (PDOException $e) {
-        error_log("Search error: " . $e->getMessage());
-        $_SESSION['error'] = "Error performing search. Please try again.";
-    }
-}
-
-// Get featured categories for catalog section
-$featuredCategories = [];
 try {
     $pdo = getConnection();
-    $stmt = $pdo->query("SELECT id, name FROM categories WHERE featured = 1 LIMIT 3");
-    $featuredCategories = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    error_log("Category fetch error: " . $e->getMessage());
-}
-
-// Get basket item count if user is logged in
-$basketCount = 0;
-if (isset($_SESSION['user_id'])) {
-    try {
-        $pdo = getConnection();
-        $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM cart_items WHERE user_id = ?");
-        $stmt->execute([$_SESSION['user_id']]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        $basketCount = $result['count'];
-    } catch (PDOException $e) {
-        error_log("Basket count error: " . $e->getMessage());
+    
+    // Get all categories
+    $stmt = $pdo->query("SELECT category_id, name_categ FROM categories");
+    $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // If a category is selected, get its products
+    if ($selectedCategory) {
+        $stmt = $pdo->prepare("SELECT * FROM products WHERE category_id = ?");
+        $stmt->execute([$selectedCategory]);
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+} catch (PDOException $e) {
+    error_log("Database error: " . $e->getMessage());
+    $_SESSION['error'] = "Error loading data. Please try again.";
 }
 ?>
 
@@ -77,37 +33,77 @@ if (isset($_SESSION['user_id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meuble Confort</title>
     <link rel="stylesheet" href="landingStyle.css">
-    
+    <style>
+        /* Add these styles to your existing CSS */
+        .category-list {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 0;
+            list-style: none;
+        }
+        
+        .category-btn {
+            padding: 10px 20px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+        
+        .category-btn:hover, .category-btn.active {
+            background-color: #333;
+            color: white;
+        }
+        
+        .products-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            transition: transform 0.3s ease;
+            background: white;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        
+        .no-products {
+            text-align: center;
+            padding: 20px;
+            grid-column: 1 / -1;
+        }
+    </style>
 </head>
 <body>
     <header class="header">
         <div class="header-container">
-            <img src="images/logo.png" alt="Gateaux gourmands logo" class="logo">
-            
-            <div class="search-container">
-                <div class="search-group">
-                    <input type="text" placeholder="Search by category..." class="search-input">
-                    <button class="search-btn">
-                        <img src="images/Search.png" alt="Search" class="search-icon">
-                    </button>
-                </div>
-                <div class="search-group">
-                    <input type="text" placeholder="Search by product..." class="search-input">
-                    <button class="search-btn">
-                        <img src="images/Search.png" alt="Search" class="search-icon">
-                    </button>
-                </div>
-            </div>
-            
+            <img src="images/MeubleConfort.png" alt="Meuble Confort logo" class="logo"> 
             <nav class="main-nav">
                 <ul class="nav-list">
                     <li class="nav-item"><a href="#home" class="nav-link">Home</a></li>
                     <li class="nav-item"><a href="#catalog" class="nav-link">Catalog</a></li>
                     <li class="nav-item"><a href="#us" class="nav-link">About Us</a></li>
-                    <li class="nav-item basket">
-                        <a href="page2.html" class="nav-link">Basket</a>
-                        <img src="images/basket.png" alt="Basket" class="basket-icon">
-                    </li>
+                    <li class="nav-item"><a href="basket.html" class="nav-link">Basket</a></li>
                 </ul>
             </nav>
         </div>
@@ -116,20 +112,45 @@ if (isset($_SESSION['user_id'])) {
     <main class="main-content">
         <section class="hero">
             <div class="hero-content">
-                <h1 class="hero-title">Welcome to our world</h1>
-                <img src="images/welcom.png" alt="Welcome illustration" class="hero-image">
+                <h1 class="hero-title">Make Yourself at Home</h1>
+                <img src="images/welcome.png" alt="Welcome illustration" class="hero-image">
             </div>
         </section>
 
         <section class="catalog-section" id="catalog">
             <h2 class="section-title">Our Catalog</h2>
             <ul class="category-list">
-                <li class="category-item"><a href="#" class="category-link">Traditionals</a></li>
-                <li class="category-item"><a href="#" class="category-link">Moderns</a></li>
-                <li class="category-item"><a href="#" class="category-link">Cakes</a></li>
+                <?php foreach ($categories as $category): ?>
+                    <li>
+                        <button class="category-btn <?= $selectedCategory == $category['category_id'] ? 'active' : '' ?>" 
+                                onclick="window.location.href='?category_id=<?= $category['category_id'] ?>'">
+                            <?= htmlspecialchars($category['name_categ']) ?>
+                        </button>
+                    </li>
+                <?php endforeach; ?>
             </ul>
+            
+            <div class="products-container" id="products-container">
+                <?php if ($selectedCategory): ?>
+                    <?php if (!empty($products)): ?>
+                        <?php foreach ($products as $product): ?>
+                            <div class="product-card">
+                                <img src="<?= htmlspecialchars($product['image_url']) ?>" 
+                                     alt="<?= htmlspecialchars($product['name_prod']) ?>" class="product-image">
+                                <h3><?= htmlspecialchars($product['name_prod']) ?></h3>
+                                <p><?= htmlspecialchars($product['description_prod']) ?></p>
+                                <p>Price: $<?= number_format($product['price'], 2) ?></p>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <p class="no-products">No products found in this category.</p>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <p class="no-products">Please select a category to view products.</p>
+                <?php endif; ?>
+            </div>
         </section>
-
+        
         <section class="about-section" id="us">
             <h2 class="section-title">About Us</h2>
             <div class="about-container">
