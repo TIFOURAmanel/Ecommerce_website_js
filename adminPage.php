@@ -14,9 +14,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_POST['product_stock'],
             $_POST['product_description']
         ]);
-        
-       
-        
     }
     
     if (isset($_POST['add_category'])) {
@@ -26,28 +23,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_POST['category_name'],
             $_POST['category_description']
         ]);
-       
-       
     }
     
     if (isset($_POST['delete_product'])) {
         $stmt = $pdo->prepare("DELETE FROM products WHERE product_id = ?");
         $stmt->execute([$_POST['product_id']]);
-      
-       
     }
     
     if (isset($_POST['delete_category'])) {
         $stmt = $pdo->prepare("DELETE FROM categories WHERE category_id = ?");
         $stmt->execute([$_POST['category_id']]);
-       
-      
+    }
+     if (isset($_POST['delete_user'])) {
+        $stmt = $pdo->prepare("DELETE FROM users WHERE user_id = ?");
+        $stmt->execute([$_POST['user_id']]);
     }
 }
 
 // Fetch data from database
 $products = $pdo->query("SELECT p.*, c.name_categ as category_name FROM products p LEFT JOIN categories c ON p.category_id = c.category_id")->fetchAll(PDO::FETCH_ASSOC);
 $categories = $pdo->query("SELECT c.*, COUNT(p.product_id) as product_count FROM categories c LEFT JOIN products p ON p.category_id = c.category_id GROUP BY c.category_id")->fetchAll(PDO::FETCH_ASSOC);
+$users = $pdo->query("SELECT * FROM users")->fetchAll(PDO::FETCH_ASSOC);
+$orders = $pdo->query("
+    SELECT o.*, u.email, CONCAT(u.first_name, ' ', u.last_name) as customer_name, 
+    SUM(oi.quantity * p.price) as total_amount,
+    COUNT(oi.order_item_id) as item_count
+    FROM orders o
+    JOIN users u ON o.user_id = u.user_id
+    JOIN order_items oi ON o.order_id = oi.order_id
+    JOIN products p ON oi.product_id = p.product_id
+    GROUP BY o.order_id
+")->fetchAll(PDO::FETCH_ASSOC);
 
 // Get counts for dashboard
 $totalProducts = $pdo->query("SELECT COUNT(*) FROM products")->fetchColumn();
@@ -56,58 +62,55 @@ $totalOrders = $pdo->query("SELECT COUNT(*) FROM orders")->fetchColumn();
 $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items oi JOIN products p ON oi.product_id = p.product_id")->fetchColumn();
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="adminStyle.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
 </head>
 <body>
-     <!-- Sidebar -->
-     <div class="sidebar">
+    <!-- Sidebar -->
+    <div class="sidebar">
         <div class="sidebar-header">
             <i class="fas fa-store-alt"></i>
             <h3>Admin Panel</h3>
         </div>
         <ul class="sidebar-menu">
             <li class="active">
-                <a href="#">
+                <a href="#" onclick="showSection('dashboard-section')">
                     <i class="fas fa-tachometer-alt"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
             <li>
-                <a href="#products">
+                <a href="#" onclick="showSection('products-section')">
                     <i class="fas fa-box-open"></i>
                     <span>Products</span>
                 </a>
             </li>
             <li>
-                <a href="#categories">
+                <a href="#" onclick="showSection('categories-section')">
                     <i class="fas fa-list"></i>
                     <span>Categories</span>
                 </a>
             </li>
             <li>
-                <a href="#orders">
+                <a href="#" onclick="showSection('orders-section')">
                     <i class="fas fa-shopping-cart"></i>
                     <span>Orders</span>
                 </a>
             </li>
             <li>
-                <a href="#users">
+                <a href="#" onclick="showSection('users-section')">
                     <i class="fas fa-users"></i>
                     <span>Users</span>
                 </a>
             </li>
             <li>
-                <a href="#settings">
+                <a href="#">
                     <i class="fas fa-cog"></i>
                     <span>Settings</span>
                 </a>
@@ -117,139 +120,256 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
 
     <!-- Main Content -->
     <div class="main-content">
-        <div class="header">
-            <h2>Dashboard</h2>
-            <div class="user-info">
-                <img src="images/User.png" alt="User">
-                <span>Admin User</span>
+        <!-- Dashboard Section -->
+        <div id="dashboard-section">
+            <div class="header">
+                <h2>Dashboard</h2>
+                <div class="user-info">
+                    <img src="images/User.png" alt="User">
+                    <span>Admin User</span>
+                </div>
+            </div>
+
+            <!-- Cards Section -->
+            <div class="cards">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Total Products</h3>
+                        <i class="fas fa-box-open"></i>
+                    </div>
+                    <div class="card-body">
+                        <h2><?= $totalProducts ?></h2>
+                        <p>+12 this week</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Total Categories</h3>
+                        <i class="fas fa-list"></i>
+                    </div>
+                    <div class="card-body">
+                        <h2><?= $totalCategories ?></h2>
+                        <p>+1 this month</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Total Orders</h3>
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="card-body">
+                        <h2><?= $totalOrders ?></h2>
+                        <p>+24 today</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Total Revenue</h3>
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="card-body">
+                        <h2>$12,345</h2>
+                        <p>+$1,234 this week</p>
+                    </div>
+                </div>
             </div>
         </div>
 
+        <!-- Products Section (initially hidden) -->
+        <div id="products-section" style="display:none;">
+            <div class="header">
+                <h2>Products</h2>
+                <div class="user-info">
+                    <img src="images/User.png" alt="User">
+                    <span>Admin User</span>
+                </div>
+            </div>
 
-    <!-- Cards Section -->
-    <div class="cards">
-     <div class="card">
-                <div class="card-header">
-                    <h3>Total Products</h3>
-                    <i class="fas fa-box-open"></i>
+            <div class="table-card">
+                <div class="table-header">
+                    <h3>Products</h3>
+                    <button class="btn" id="add-product-btn">Add Product</button>
                 </div>
-        <div class="card-body">
-            <h2><?= $totalProducts ?></h2>
-            <p>+12 this week</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($products as $product): ?>
+                        <tr>
+                            <td><?= $product['product_id'] ?></td>
+                            <td><?= htmlspecialchars($product['name_prod']) ?></td>
+                            <td><?= htmlspecialchars($product['category_name']) ?></td>
+                            <td><?= number_format($product['price'], 4) ?> da</td>
+                            <td><?= $product['stock_quantity'] ?></td>
+                            <td>
+                                <span class="status <?= $product['stock_quantity'] > 0 ? 'active' : 'inactive' ?>">
+                                    <?= $product['stock_quantity'] > 0 ? 'Active' : 'Out of Stock' ?>
+                                </span>
+                            </td>
+                            <td>
+                                <button class="action-btn edit-btn">Edit</button>
+                                <form method="POST" style="display:inline;">
+                                    <input type="hidden" name="product_id" value="<?= $product['product_id'] ?>">
+                                    <button type="submit" name="delete_product" class="action-btn delete-btn">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
-     </div>
-            <div class="card">
-                <div class="card-header">
-                    <h3>Total Categories</h3>
-                    <i class="fas fa-list"></i>
-                </div>
-                <div class="card-body">
-                    <h2><?= $totalCategories ?></h2>
-                    <p>+1 this month</p>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <h3>Total Orders</h3>
-                    <i class="fas fa-shopping-cart"></i>
-                </div>
-                <div class="card-body">
-                    <h2><?= $totalOrders ?></h2>
-                    <p>+24 today</p>
+
+        <!-- Categories Section (initially hidden) -->
+        <div id="categories-section" style="display:none;">
+            <div class="header">
+                <h2>Categories</h2>
+                <div class="user-info">
+                    <img src="images/User.png" alt="User">
+                    <span>Admin User</span>
                 </div>
             </div>
-            <div class="card">
-                <div class="card-header">
-                    <h3>Total Revenue</h3>
-                    <i class="fas fa-dollar-sign"></i>
+
+            <div class="table-card">
+                <div class="table-header">
+                    <h3>Categories</h3>
+                    <button class="btn" id="add-category-btn">Add Category</button>
                 </div>
-                <div class="card-body">
-                    <h2>$12,345</h2>
-                    <p>+$1,234 this week</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Products</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($categories as $category): ?>
+                        <tr>
+                            <td><?= $category['category_id'] ?></td>
+                            <td><?= htmlspecialchars($category['name_categ']) ?></td>
+                            <td><?= htmlspecialchars($category['description_categ']) ?></td>
+                            <td><?= $category['product_count'] ?></td>
+                            <td>
+                                <button class="action-btn edit-btn">Edit</button>
+                                <form method="POST" style="display:inline;">
+                                    <input type="hidden" name="category_id" value="<?= $category['category_id'] ?>">
+                                    <button type="submit" name="delete_category" class="action-btn delete-btn">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div id="orders-section" style="display:none;">
+            <div class="header">
+                <h2>Orders</h2>
+                <div class="user-info">
+                    <img src="images/User.png" alt="User">
+                    <span>Admin User</span>
                 </div>
+            </div>
+
+            <div class="table-card">
+                <div class="table-header">
+                    <h3>All Orders</h3>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Payment</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($orders as $order): ?>
+                        <tr>
+                            <td><?= $order['order_id'] ?></td>
+                            <td><?= htmlspecialchars($order['customer_name']) ?></td>
+                            <td><?= date('M j, Y', strtotime($order['order_date'])) ?></td>
+                            <td><?= $order['item_count'] ?></td>
+                            <td>$<?= number_format($order['total_amount'], 2) ?></td>
+                            <td><?= htmlspecialchars($order['payment_method']) ?></td>
+                            <td>
+                                <span class="status active">Completed</span>
+                            </td>
+                            <td>
+                                <button class="action-btn view-btn">View</button>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Users Section -->
+        <div id="users-section" style="display:none;">
+            <div class="header">
+                <h2>Users</h2>
+                <div class="user-info">
+                    <img src="images/User.png" alt="User">
+                    <span>Admin User</span>
+                </div>
+            </div>
+
+            <div class="table-card">
+                <div class="table-header">
+                    <h3>All Users</h3>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Address</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($users as $user): ?>
+                        <tr>
+                            <td><?= $user['user_id'] ?></td>
+                            <td><?= htmlspecialchars($user['first_name'] . ' ' . htmlspecialchars($user['last_name'])) ?></td>
+                            <td><?= htmlspecialchars($user['email']) ?></td>
+                            <td><?= ucfirst($user['role_user']) ?></td>
+                            <td><?= htmlspecialchars($user['city'] . ', ' . $user['country']) ?></td>
+                            <td>
+                                <button class="action-btn edit-btn">Edit</button>
+                                <form method="POST" style="display:inline;">
+                                    <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
+                                    <button type="submit" name="delete_user" class="action-btn delete-btn">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-
-    <!-- Tables Section -->
-    <div class="tables">
-        <div class="table-card">
-            <div class="table-header">
-                <h3>Products</h3>
-                <button class="btn" id="add-product-btn">Add Product</button>
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Category</th>
-                        <th>Price</th>
-                        <th>Stock</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($products as $product): ?>
-                    <tr>
-                        <td><?= $product['product_id'] ?></td>
-                        <td><?= htmlspecialchars($product['name_prod']) ?></td>
-                        <td><?= htmlspecialchars($product['category_name']) ?></td>
-                        <td><?= number_format($product['price'], 4) ?> da</td>
-                        <td><?= $product['stock_quantity'] ?></td>
-                        <td>
-                            <span class="status <?= $product['stock_quantity'] > 0 ? 'active' : 'inactive' ?>">
-                                <?= $product['stock_quantity'] > 0 ? 'Active' : 'Out of Stock' ?>
-                            </span>
-                        </td>
-                        <td>
-                            <button class="action-btn edit-btn">Edit</button>
-                            <form method="POST" style="display:inline;">
-                                <input type="hidden" name="product_id" value="<?= $product['product_id'] ?>">
-                                <button type="submit" name="delete_product" class="action-btn delete-btn">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="table-card">
-            <div class="table-header">
-                <h3>Categories</h3>
-                <button class="btn" id="add-category-btn">Add Category</button>
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Products</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($categories as $category): ?>
-                    <tr>
-                        <td><?= $category['category_id'] ?></td>
-                        <td><?= htmlspecialchars($category['name_categ']) ?></td>
-                        <td><?= htmlspecialchars($category['description_categ']) ?></td>
-                        <td><?= $category['product_count'] ?></td>
-                        <td>
-                            <button class="action-btn edit-btn">Edit</button>
-                            <form method="POST" style="display:inline;">
-                                <input type="hidden" name="category_id" value="<?= $category['category_id'] ?>">
-                                <button type="submit" name="delete_category" class="action-btn delete-btn">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
     </div>
 
     <!-- Add Product Modal -->
@@ -322,20 +442,41 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
             </form>
         </div>
     </div>
-
     <script>
-        // Modal functionality (same as before)
+        // Section Navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.main-content > div').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).style.display = 'block';
+            
+            // Update active menu item
+            document.querySelectorAll('.sidebar-menu li').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.parentElement.classList.add('active');
+        }
+
+        // Initialize to show dashboard by default
+        document.addEventListener('DOMContentLoaded', function() {
+            showSection('dashboard-section');
+        });
+
+        // Modal functionality
         const productModal = document.getElementById('product-modal');
         const categoryModal = document.getElementById('category-modal');
         const addProductBtn = document.getElementById('add-product-btn');
         const addCategoryBtn = document.getElementById('add-category-btn');
         const closeBtns = document.querySelectorAll('.close-btn');
 
-        addProductBtn.addEventListener('click', () => {
+        addProductBtn?.addEventListener('click', () => {
             productModal.style.display = 'flex';
         });
 
-        addCategoryBtn.addEventListener('click', () => {
+        addCategoryBtn?.addEventListener('click', () => {
             categoryModal.style.display = 'flex';
         });
 
@@ -354,8 +495,6 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
                 categoryModal.style.display = 'none';
             }
         });
-
-        // Form submission handled by PHP now
     </script>
 </body>
 </html>

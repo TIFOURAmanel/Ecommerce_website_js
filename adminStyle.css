@@ -362,3 +362,17 @@ table th {
         font-size: 12px;
     }
 }
+
+
+.main-content > div {
+    transition: opacity 0.3s ease;
+}
+
+[style*="display: none"] {
+    display: none !important;
+    opacity: 0;
+}
+
+[style*="display: block"] {
+    opacity: 1;
+}

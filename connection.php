@@ -2,7 +2,7 @@
 <?php
 function getConnection() {
     $host = 'localhost';
-    $dbname = 'gateaux_ecommerce';
+    $dbname = 'meubles_ecommerce';
     $username = 'root'; 
     $password = '';
 
