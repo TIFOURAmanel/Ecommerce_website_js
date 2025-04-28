@@ -1,8 +1,8 @@
 <?php
 session_start();
-require_once('connection.php'); // Database connection file
+require_once('connection.php');
 
-// Initialize variables
+// Initialize variables and fetch data
 $selectedCategory = isset($_GET['category_id']) ? (int)$_GET['category_id'] : null;
 $products = [];
 $categories = [];
@@ -10,11 +10,11 @@ $categories = [];
 try {
     $pdo = getConnection();
     
-    // Get all categories
+    // Fetch categories
     $stmt = $pdo->query("SELECT category_id, name_categ FROM categories");
     $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    // If a category is selected, get its products
+    // Fetch products if category selected
     if ($selectedCategory) {
         $stmt = $pdo->prepare("SELECT * FROM products WHERE category_id = ?");
         $stmt->execute([$selectedCategory]);
@@ -25,7 +25,6 @@ try {
     $_SESSION['error'] = "Error loading data. Please try again.";
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,7 +33,6 @@ try {
     <title>Meuble Confort</title>
     <link rel="stylesheet" href="landingStyle.css">
     <style>
-        /* Add these styles to your existing CSS */
         .category-list {
             display: flex;
             justify-content: center;
@@ -43,7 +41,6 @@ try {
             padding: 0;
             list-style: none;
         }
-        
         .category-btn {
             padding: 10px 20px;
             background-color: #f5f5f5;
@@ -53,12 +50,10 @@ try {
             transition: all 0.3s ease;
             font-size: 16px;
         }
-        
         .category-btn:hover, .category-btn.active {
             background-color: #333;
             color: white;
         }
-        
         .products-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -66,7 +61,6 @@ try {
             padding: 20px;
             margin-top: 20px;
         }
-        
         .product-card {
             border: 1px solid #ddd;
             border-radius: 8px;
@@ -74,19 +68,16 @@ try {
             transition: transform 0.3s ease;
             background: white;
         }
-        
         .product-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-        
         .product-image {
             width: 100%;
             height: 200px;
             object-fit: cover;
             border-radius: 4px;
         }
-        
         .no-products {
             text-align: center;
             padding: 20px;
@@ -130,7 +121,7 @@ try {
                 <?php endforeach; ?>
             </ul>
             
-            <div class="products-container" id="products-container">
+            <div class="products-container">
                 <?php if ($selectedCategory): ?>
                     <?php if (!empty($products)): ?>
                         <?php foreach ($products as $product): ?>
@@ -155,7 +146,6 @@ try {
             <h2 class="section-title">About Us</h2>
             <div class="about-container">
                 <img src="images/logocake.png" alt="Cake logo" class="about-logo">
-                
                 <div class="about-content">
                     <h3 class="about-subtitle">Our Shop</h3>
                     <p class="about-text">
@@ -165,7 +155,6 @@ try {
                     </p>
                     <button class="cta-button">Contact Us</button>
                 </div>
-                
                 <img src="images/map.png" alt="Location map" class="about-map">
             </div>
         </section>
@@ -178,7 +167,6 @@ try {
                 <p class="phone-number">+213 (0) 657987786</p>
                 <div class="social-icons">
                     <img src="images/instagram.png" alt="Instagram" class="social-icon">
-                    <!-- Add other social icons here -->
                 </div>
             </div>
             <div class="divider"></div>
