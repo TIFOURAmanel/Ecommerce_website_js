@@ -22,7 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // You should fetch price from database here for security
             $_SESSION['basket'][$productId] = [
                 'quantity' => $quantity,
-                'price' => (float)$_POST['price'] // Added hidden field in form
             ];
         }
     } 
@@ -35,4 +34,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: ".$_SERVER['HTTP_REFERER']);
     exit();
 }
-?> this code i have to put it in the landing page file at the top ?
+?> 

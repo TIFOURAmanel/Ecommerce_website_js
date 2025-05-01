@@ -316,11 +316,12 @@ try {
             <ul class="category-list">
                 <?php foreach ($categories as $category): ?>
                     <li>
-                        <a href="?category_id=<?= $category['category_id'] ?>" 
-                           class="category-btn <?= $selectedCategory == $category['category_id'] ? 'active' : '' ?>">
-                            <?= htmlspecialchars($category['name_categ']) ?>
-                        </a>
-                    </li>
+                <a href="#catalog?category_id=<?= $category['category_id'] ?>" 
+                   class="category-btn <?= $selectedCategory == $category['category_id'] ? 'active' : '' ?>"
+                   onclick="event.preventDefault(); window.location.href='?category_id=<?= $category['category_id'] ?>#catalog'">
+                    <?= htmlspecialchars($category['name_categ']) ?>
+                </a>
+            </li>
                 <?php endforeach; ?>
             </ul>
             
@@ -351,9 +352,7 @@ try {
                 <div class="about-content">
                     <h3 class="about-subtitle">Our Shop</h3>
                     <p class="about-text">
-                        Here you can add a description about the shop, what it can offer, 
-                        when it was created, information about the owner, where it's located, 
-                        and any information that makes your customers trust you.
+                    Meuble Confort offers exquisite, handcrafted furniture designed to bring comfort and elegance to your home. Specializing in premium sofas, chairs, tables, and bedroom sets, we combine quality craftsmanship with stylish designs to transform your living spaces. Conveniently located in Draria (Algiers), our showroom welcomes you to experience the perfect blend of functionality and aesthetic appeal. Whether you're furnishing a modern apartment or a classic home, Meuble Confort provides durable, beautiful pieces that enhance your everyday living. Visit us or explore our online catalog to discover furniture that reflects your unique taste and lifestyle.
                     </p>
                     <button class="cta-button">Contact Us</button>
                 </div>
@@ -379,6 +378,7 @@ try {
                     
                     <form method="post" action="cart.php">
                         <input type="hidden" name="product_id" value="<?= $productDetails['product_id'] ?>">
+                        <input type="hidden" name="price" value="<?= $productDetails['price'] ?>">
                         <div class="quantity-controls">
                             <label for="quantity">Quantity:</label>
                             <input type="number" id="quantity" name="quantity" value="1" min="1" class="quantity-input">

@@ -39,7 +39,7 @@ CREATE TABLE orders (
     user_id INT,
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     address VARCHAR(255) NOT NULL,
-    payment_method VARCHAR(50) NOT NULL,
+    total_amount FLOAT ,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 

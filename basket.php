@@ -6,12 +6,16 @@ require_once('connection.php'); // Include your database connection
 $pdo = getConnection();
 // Calculate totals
 $subtotal = 0;
-$deliveryFee = 5.99; // Fixed delivery fee
+$deliveryFee = 1000; // Fixed delivery fee
 $itemCount = 0;
 
 if (!empty($_SESSION['basket'])) {
     foreach ($_SESSION['basket'] as $productId => $item) {
-        $subtotal += $item['price'] * $item['quantity'];
+        $stmt = $pdo->prepare("SELECT price FROM products WHERE product_id = ?");
+        $stmt->execute([$productId]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $price = (float)$result['price'];
+        $subtotal += $price * $item['quantity'];
         $itemCount += $item['quantity'];
     }
 }
@@ -64,7 +68,7 @@ $total = $subtotal + $deliveryFee;
                     <div class="basket-items">
                         <?php foreach ($_SESSION['basket'] as $productId => $item): 
                             // Fetch product details from database for better info
-                            $stmt = $pdo->prepare("SELECT name_prod, description_prod, image_url FROM products WHERE product_id = ?");
+                            $stmt = $pdo->prepare("SELECT name_prod, description_prod, price ,image_url FROM products WHERE product_id = ?");
                             $stmt->execute([$productId]);
                             $product = $stmt->fetch();
                         ?>
@@ -80,7 +84,7 @@ $total = $subtotal + $deliveryFee;
                                     </div>
                                 </div>
                                 <div class="item-price">
-                                    <span class="price">$<?= number_format($item['price'], 2) ?></span>
+                                    <span class="price">$<?= number_format($product['price'], 2) ?></span>
                                     <button class="remove-btn" onclick="removeItem(<?= $productId ?>)">Remove</button>
                                 </div>
                             </div>
@@ -103,8 +107,12 @@ $total = $subtotal + $deliveryFee;
                                 <span>$<?= number_format($total, 2) ?></span>
                             </div>
                         </div>
-                        <button class="checkout-btn">Proceed to Checkout</button>
+                        <button class="checkout-btn">Validate order</button>
                         <a href="landingPage.php#catalog" class="continue-shopping">Continue Shopping</a>
+                        <input type="hidden" name="user_id" value="<?php echo isset($_SESSION['user_id']) ? $_SESSION['user_id'] : ''; ?>">
+<input type="hidden" name="subtotal" value="<?php echo $subtotal; ?>">
+<input type="hidden" name="delivery_fee" value="<?php echo $deliveryFee; ?>">
+<input type="hidden" name="total_amount" value="<?php echo $total; ?>">
                     </div>
                 <?php endif; ?>
             </div>
@@ -120,9 +128,8 @@ $total = $subtotal + $deliveryFee;
                     <img src="images/instagram.png" alt="Instagram" class="social-icon">
                 </div>
             </div>
-            <div class="divider"></div>
-            <p class="copyright">© <?= date('Y') ?> Meuble Confort. All rights reserved.</p>
-        </div>
+            
+            
     </footer>
 
     <script>
