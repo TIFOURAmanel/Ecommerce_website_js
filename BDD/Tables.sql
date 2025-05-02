@@ -40,6 +40,7 @@ CREATE TABLE orders (
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     address VARCHAR(255) NOT NULL,
     total_amount FLOAT ,
+    state ENUM('cancelled', 'active') DEFAULT 'active',
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 

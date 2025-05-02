@@ -109,10 +109,7 @@ $total = $subtotal + $deliveryFee;
                         </div>
                         <button class="checkout-btn">Validate order</button>
                         <a href="landingPage.php#catalog" class="continue-shopping">Continue Shopping</a>
-                        <input type="hidden" name="user_id" value="<?php echo isset($_SESSION['user_id']) ? $_SESSION['user_id'] : ''; ?>">
-<input type="hidden" name="subtotal" value="<?php echo $subtotal; ?>">
-<input type="hidden" name="delivery_fee" value="<?php echo $deliveryFee; ?>">
-<input type="hidden" name="total_amount" value="<?php echo $total; ?>">
+                        
                     </div>
                 <?php endif; ?>
             </div>
