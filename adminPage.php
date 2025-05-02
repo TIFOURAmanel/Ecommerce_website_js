@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once ('connection.php');
 
 // Handle form submissions
@@ -124,13 +125,22 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
     <div class="main-content">
         <!-- Dashboard Section -->
         <div id="dashboard-section">
-            <div class="header">
-                <h2>Dashboard</h2>
-                <div class="user-info">
+        <div class="header">
+    <h2>Dashboard</h2>
+    <div class="user-info">
+        <?php if(isset($_SESSION['user_id'])): ?>
+            <div class="logout-container">
+                <button type="button" class="logout-btn" onclick="confirmLogout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+                <span class="user-name">
                     <img src="images/User.png" alt="User">
-                    <span>Admin User</span>
-                </div>
+                    Admin User
+                </span>
             </div>
+        <?php endif; ?>
+    </div>
+</div>
 
             <!-- Cards Section -->
             <div class="cards">
@@ -444,7 +454,34 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
             </form>
         </div>
     </div>
+
+   <!-- Logout Confirmation Modal -->
+<div class="modal" id="logoutModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Logout</h3>
+            <button class="close-btn" onclick="closeLogoutModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to log out?</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeLogoutModal()">No</button>
+            <form method="post" action="sign.php" style="display: inline;">
+                <input type="hidden" name="logout" value="1">
+                <button type="submit" class="btn btn-primary">Yes</button>
+            </form>
+        </div>
+    </div>
+</div>
     <script>
+       function confirmLogout() {
+    document.getElementById('logoutModal').style.display = 'flex';
+}
+
+function closeLogoutModal() {
+    document.getElementById('logoutModal').style.display = 'none';
+}
         // Section Navigation
         function showSection(sectionId) {
             // Hide all sections
