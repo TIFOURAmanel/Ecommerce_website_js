@@ -20,24 +20,18 @@ BEGIN
                 CONCAT(p.name_prod, ' (', oi.quantity, ' × ', p.price, 'da)')
                 SEPARATOR ', '
             ) AS produits,
-            COUNT(oi.order_item_id) AS nombre_produits,
-            CASE 
-                WHEN o.state = 'cancelled' THEN 
-                    (SELECT cancellation_date FROM cancelled_orders WHERE order_id = o.order_id)
-                ELSE NULL
-            END AS cancellation_date
+            COUNT(oi.order_item_id) AS nombre_produits
+            
         FROM 
             orders o
         LEFT JOIN 
             order_items oi ON o.order_id = oi.order_id
         LEFT JOIN 
             products p ON oi.product_id = p.product_id
-        LEFT JOIN
-            cancelled_orders co ON o.order_id = co.order_id
         WHERE 
             o.user_id = p_user_id
         GROUP BY 
-            o.order_id, o.order_date, o.total_amount, o.state, co.cancellation_date
+            o.order_id, o.order_date, o.total_amount, o.state
         ORDER BY 
             o.order_date DESC;
     END IF;
