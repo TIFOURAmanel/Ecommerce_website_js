@@ -33,26 +33,7 @@ $total = $subtotal + $deliveryFee;
     <link href="https://fonts.googleapis.com/css2?family=Italianno&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header class="header">
-        <div class="header-container">
-            <a href="index.php" class="logo-link">
-                <img src="images/MeubleConfort.png" alt="Meuble Confort logo" class="logo">
-            </a>
-            
-            <nav class="main-nav">
-                <ul class="nav-list">
-                    <li class="nav-item"><a href="landingPage.php#home" class="nav-link">Home</a></li>
-                    <li class="nav-item"><a href="landingPage.php#catalog" class="nav-link">Catalog</a></li>
-                    <li class="nav-item"><a href="landingPage.php#us" class="nav-link">About Us</a></li>
-                    <li class="nav-item basket">
-                        <a href="basket.php" class="nav-link active">Basket</a>
-                        <img src="images/basket.png" alt="Basket" class="basket-icon">
-                        <span class="basket-count"><?= $itemCount ?></span>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+<?php include('header.php'); ?>
 
     <main class="main-content">
         <section class="basket-section">
@@ -107,7 +88,8 @@ $total = $subtotal + $deliveryFee;
                                 <span>$<?= number_format($total, 2) ?></span>
                             </div>
                         </div>
-                        <button class="checkout-btn">Validate order</button>
+                        <div class="checkout-section">
+    <button type="button" class="checkout-btn" onclick="showAddressForm()">Validate order</button>
                         <a href="landingPage.php#catalog" class="continue-shopping">Continue Shopping</a>
                         
                     </div>
@@ -115,21 +97,32 @@ $total = $subtotal + $deliveryFee;
             </div>
         </section>
     </main>
-
-    <footer class="footer">
-        <div class="footer-container">
-            <h2 class="footer-title">Contact Us</h2>
-            <div class="contact-info">
-                <p class="phone-number">+213 (0) 657987786</p>
-                <div class="social-icons">
-                    <img src="images/instagram.png" alt="Instagram" class="social-icon">
-                </div>
+    <div id="address-form" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:20px; border:1px solid #ccc; z-index:1000; max-width:500px; width:90%;">
+        <form method="post" action="process_order.php">
+            <h3>Enter Your Delivery Address</h3>
+            <div style="margin-bottom:15px;">
+                <input type="text" name="address" placeholder="Your full address" required 
+                       style="width:100%; padding:8px; box-sizing:border-box;">
             </div>
-            
-            
-    </footer>
+            <div style="display:flex; gap:10px;">
+                <button type="button" onclick="hideAddressForm()" 
+                        style="padding:8px 15px; background:#f0f0f0; border:1px solid #ccc;">Cancel</button>
+                <button type="submit" name="submit_address" 
+                        style="padding:8px 15px; background:var(--primary-color); color:white; border:none;">Continue</button>
+            </div>
+        </form>
+    </div>
+</div>
+<?php include('footer.php'); ?>
+
 
     <script>
+        function showAddressForm() {
+    document.getElementById('address-form').style.display = 'block';
+}
+function hideAddressForm() {
+    document.getElementById('address-form').style.display = 'none';
+}
     function updateQuantity(productId, change) {
         fetch('update_basket.php', {
             method: 'POST',

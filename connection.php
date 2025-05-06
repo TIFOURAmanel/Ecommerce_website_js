@@ -18,7 +18,7 @@ function getConnection() {
                 PDO::ATTR_EMULATE_PREPARES => false 
             ]
         );
-        echo "<script>console.log('✅ Connexion à la base de données réussie');</script>";
+        error_log("✅ Database connection successful");
 
         return $pdo;
         

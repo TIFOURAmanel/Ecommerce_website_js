@@ -52,35 +52,6 @@ body {
     margin-bottom: 1rem;
 }
 
-/* ===== Header Styles ===== */
-.header {
-    background-color: var(--primary-light);
-    padding: 1rem 0;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: var(--shadow);
-}
-
-.header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
-}
-
-.logo {
-    height: 50px;
-    width: auto;
-    transition: var(--transition);
-}
-
-.logo:hover {
-    transform: scale(1.05);
-}
-
 /* ===== Navigation Styles ===== */
 .main-nav {
     display: flex;
@@ -349,6 +320,68 @@ body {
     font-size: 0.8rem;
     color: #666;
 }
+/* Add this CSS to your stylesheet */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    width: 80%;
+    max-width: 500px;
+}
+
+.close-btn {
+    float: right;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.submit-btn, .confirm-btn {
+    padding: 10px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.confirm-btn {
+    background-color: #f44336;
+}
+
+.button-group {
+    text-align: center;
+    margin-top: 20px;
+}
+
 
 /* ===== Responsive Design ===== */
 @media (max-width: 768px) {
