@@ -83,6 +83,8 @@
                 <li class="nav-item"><a href="landingPage.php#catalog" class="nav-link">Catalog</a></li>
                 <li class="nav-item"><a href="landingPage.php#us" class="nav-link">About Us</a></li>
                 <li class="nav-item"><a href="basket.php" class="nav-link">Basket</a></li>
+                <li class="nav-item"><a href="my_orders.php" class="btn btn-primary">Orders</a></li>
+
                 <?php if(isset($_SESSION['user_id'])): ?>
                     <li class="nav-item">
                         <form method="post" action="sign.php" id="logoutForm" style="display: inline;">
