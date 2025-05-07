@@ -1,0 +1,201 @@
+/* Reusing the same color variables from header.css */
+:root {
+    --beige-light: #F5F5DC;
+    --beige-medium: #E6E2D6;
+    --beige-dark: #D2C8B8;
+    --maroon-light: #8B4513;
+    --maroon-medium: #6B2D1E;
+    --maroon-dark: #4A1C13;
+    --text-dark: #333;
+    --text-light: #FFF;
+    --instagram-color: #E1306C;
+    --facebook-color: #4267B2;
+}
+
+/* Footer Base Styles */
+.footer {
+    background-color: var(--maroon-dark);
+    color: var(--beige-light);
+    padding: 3rem 0 1.5rem;
+    margin-top: 3rem;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 250px;
+}
+
+/* Contact Icons */
+.contact-icon {
+    font-size: 1.2rem;
+    width: 24px;
+    text-align: center;
+    color: var(--beige-medium);
+}
+
+/* Social Icons - Beautiful Web Version */
+.social-icons {
+    display: flex;
+    gap: 1.2rem;
+}
+
+.social-link {
+    display: inline-flex; /* Changed from flex to inline-flex */
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    position: relative; /* Added for perfect centering */
+}
+
+.social-icon {
+    font-size: 1.2rem; /* Slightly reduced size */
+    color: white;
+    transition: transform 0.3s ease;
+    position: absolute;
+    margin: auto; /* Perfect centering */
+}
+
+/* Instagram Specific */
+.social-link.instagram {
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+}
+
+/* Facebook Specific */
+.social-link.facebook {
+    background-color: var(--facebook-color);
+}
+
+/* Hover Effects */
+.social-link:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.social-link:hover .social-icon {
+    transform: scale(1.1);
+}
+/* Contact Info Styles */
+.footer-title {
+    color: var(--beige-light);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    display: inline-block;
+}
+
+.footer-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 50%;
+    height: 2px;
+    background-color: var(--beige-medium);
+}
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin: 0.5rem 0;
+}
+
+.contact-icon {
+    font-size: 1.2rem;
+}
+
+.phone-number, .email {
+    transition: color 0.3s ease;
+}
+
+.phone-number:hover, .email:hover {
+    color: var(--beige-medium);
+    cursor: default;
+}
+
+/* Social Media Styles */
+.social-title {
+    color: var(--beige-light);
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.social-icons {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.social-link {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.social-link:hover {
+    transform: translateY(-5px);
+}
+
+.social-icon {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    transition: filter 0.3s ease;
+}
+
+.social-link:hover .social-icon {
+    filter: brightness(0) invert(0.8);
+}
+
+/* Divider & Copyright */
+.divider {
+    height: 1px;
+    background-color: var(--beige-medium);
+    opacity: 0.3;
+    margin: 1.5rem 0;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 1rem;
+}
+
+.copyright {
+    font-size: 0.9rem;
+    color: var(--beige-medium);
+    margin: 0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        gap: 2.5rem;
+    }
+    
+    .footer-title::after {
+        width: 30%;
+    }
+}
