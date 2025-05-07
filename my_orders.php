@@ -22,14 +22,7 @@ $stmt->closeCursor(); // Required when calling stored procedures
 <head>
     <meta charset="UTF-8">
     <title>My Orders</title>
-    <style>
-        body { font-family: Arial; padding: 2rem; background: #f7f7f7; }
-        .order { background: white; padding: 1rem; margin-bottom: 1rem; border: 1px solid #ddd; border-radius: 6px; }
-        .order h3 { margin: 0 0 1rem 0; }
-        .order-actions { margin-top: 1rem; }
-        .btn-cancel { background: #e74c3c; color: white; padding: 0.5rem 1rem; border: none; border-radius: 4px; cursor: pointer; }
-        .btn-disabled { background: #ccc; cursor: not-allowed; }
-    </style>
+    <link rel="stylesheet" href="order.css">
 </head>
 <body>
 <?php include('header.php'); ?>
@@ -44,9 +37,6 @@ $stmt->closeCursor(); // Required when calling stored procedures
                 <p><strong>Date:</strong> <?= $order['order_date'] ?></p>
                 <p><strong>Total:</strong> <?= number_format($order['total_amount'], 2) ?>da</p>
                 <p><strong>Status:</strong> <?= htmlspecialchars($order['status']) ?></p>
-                <?php if (!empty($order['cancellation_date'])): ?>
-                    <p><strong>Cancelled on:</strong> <?= $order['cancellation_date'] ?></p>
-                <?php endif; ?>
                 <p><strong>Products:</strong> <?= htmlspecialchars($order['produits']) ?></p>
 
                 <?php if ($order['status'] !== 'cancelled'): ?>

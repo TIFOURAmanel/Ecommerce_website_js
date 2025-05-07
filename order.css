@@ -1,0 +1,135 @@
+/* ===== Orders Page Styles ===== */
+/* Using your existing color scheme from landing page */
+:root {
+    --primary-dark: #5E3023;      /* Deep maroon */
+    --primary-color: #8B4513;     /* Rich brown */
+    --primary-light: #D2B48C;     /* Tan */
+    --accent-color: #C19A6B;      /* Warm beige */
+    --text-dark: #3A2C28;        /* Dark brown */
+    --text-light: #F5F5DC;       /* Cream */
+    --gray-light: #FAF8F5;       /* Soft white */
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+    --shadow: 0 4px 12px rgba(94, 48, 35, 0.1);
+  }
+  
+  /* Base Styles - Works with your existing HTML classes */
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--gray-light);
+    padding: 2rem;
+  }
+  
+  h2 {
+    color: var(--primary-dark);
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    position: relative;
+  }
+  
+  h2::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    background: var(--accent-color);
+    margin: 1rem auto;
+  }
+  
+  /* Order Items - Your existing .order class */
+  .order {
+    background: white;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--primary-light);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+  }
+  
+  .order:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+  }
+  
+  .order h3 {
+    color: var(--primary-dark);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+  }
+  
+  .order p {
+    margin-bottom: 0.8rem;
+    line-height: 1.6;
+  }
+  
+  .order p strong {
+    color: var(--primary-dark);
+  }
+  
+  /* Status Styles - Works with your existing status text */
+  .order p strong:contains("Status:") + * {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  
+  .order p strong:contains("Status:") + *:contains("pending") {
+    background-color: #FFF3CD;
+    color: #856404;
+  }
+  
+  .order p strong:contains("Status:") + *:contains("completed") {
+    background-color: #D4EDDA;
+    color: #155724;
+  }
+  
+  .order p strong:contains("Status:") + *:contains("cancelled") {
+    background-color: #F8D7DA;
+    color: #721C24;
+  }
+  
+  /* Cancel Button - Your existing .btn-cancel class */
+  .btn-cancel {
+    background-color: var(--primary-dark);
+    color: white;
+    padding: 0.7rem 1.5rem;
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-top: 1rem;
+    display: inline-block;
+  }
+  
+  .btn-cancel:hover {
+    background-color: #8B0000;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+  }
+  
+  /* Empty State */
+  .order + p {
+    text-align: center;
+    padding: 3rem;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    font-size: 1.1rem;
+    color: var(--primary-dark);
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    body {
+      padding: 1rem;
+    }
+    
+    .order {
+      padding: 1.2rem;
+    }
+  }
