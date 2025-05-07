@@ -52,6 +52,85 @@ $stmt->closeCursor(); // Required when calling stored procedures
     <?php endif; ?>
 
     <?php include('footer.php'); ?>
+   <script>
+// Animate orders on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate the title
+    anime({
+        targets: 'h2',
+        translateY: [-30, 0],
+        opacity: [0, 1],
+        duration: 800,
+        easing: 'easeOutExpo'
+    });
+    
+    // Animate each order card with stagger
+    anime({
+        targets: '.order',
+        translateY: [40, 0],
+        opacity: [0, 1],
+        duration: 800,
+        delay: anime.stagger(100, {start: 300}),
+        easing: 'easeOutExpo'
+    });
+    
+    // Add hover animation to order cards
+    const orders = document.querySelectorAll('.order');
+    orders.forEach(order => {
+        order.addEventListener('mouseenter', () => {
+            anime({
+                targets: order,
+                scale: 1.02,
+                duration: 300,
+                easing: 'easeInOutQuad'
+            });
+        });
+        
+        order.addEventListener('mouseleave', () => {
+            anime({
+                targets: order,
+                scale: 1,
+                duration: 300,
+                easing: 'easeInOutQuad'
+            });
+        });
+    });
+    
+    // Add pulse animation to cancel buttons
+    const cancelBtns = document.querySelectorAll('.btn-cancel');
+    cancelBtns.forEach(btn => {
+        btn.addEventListener('mouseenter', () => {
+            anime({
+                targets: btn,
+                scale: 1.05,
+                duration: 300,
+                easing: 'easeInOutQuad'
+            });
+        });
+        
+        btn.addEventListener('mouseleave', () => {
+            anime({
+                targets: btn,
+                scale: 1,
+                duration: 300,
+                easing: 'easeInOutQuad'
+            });
+        });
+    });
+    
+    // Add animation for empty state
+    const emptyState = document.querySelector('p:not(.order p)');
+    if (emptyState) {
+        anime({
+            targets: emptyState,
+            scale: [0.9, 1],
+            opacity: [0, 1],
+            duration: 800,
+            easing: 'easeOutElastic'
+        });
+    }
+});
+</script>
 </body>
 </html>
 

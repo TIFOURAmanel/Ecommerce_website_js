@@ -54,7 +54,7 @@ $total = $totalAmount + $deliveryFee;
     <title>Order Confirmation</title>
     <style>
         :root {
-            --primary-color: #4a6fa5;
+            --primary-color:#461c03;
             --accent-color: #ff7e5f;
             --text-dark: #333;
             --text-light: #fff;
@@ -72,25 +72,7 @@ $total = $totalAmount + $deliveryFee;
             background-color: #f9f9f9;
         }
         
-        header {
-            background-color: var(--primary-color);
-            color: var(--text-light);
-            padding: 1rem 2rem;
-            box-shadow: var(--shadow);
-        }
-        
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .logo {
-            height: 50px;
-        }
-        
+       
         main {
             max-width: 800px;
             margin: 2rem auto;
@@ -151,24 +133,10 @@ $total = $totalAmount + $deliveryFee;
             border: 1px solid #ddd;
         }
         
-        footer {
-            background-color: var(--primary-color);
-            color: var(--text-light);
-            text-align: center;
-            padding: 1.5rem;
-            margin-top: 2rem;
-        }
     </style>
 </head>
 <body>
-    <header>
-        <div class="header-container">
-            <img src="images/MeubleConfort.png" alt="Meuble Confort Logo" class="logo">
-            <nav>
-                <a href="basket.php" style="color: white; text-decoration: none;">Back to Basket</a>
-            </nav>
-        </div>
-    </header>
+<?php include('header.php'); ?>
 
     <main>
         <div class="confirmation-container">
@@ -218,8 +186,6 @@ $total = $totalAmount + $deliveryFee;
         </div>
     </main>
 
-    <footer>
-        <p>&copy; <?= date('Y') ?> Meuble Confort. All rights reserved.</p>
-    </footer>
+    <?php include('footer.php'); ?>
 </body>
 </html>

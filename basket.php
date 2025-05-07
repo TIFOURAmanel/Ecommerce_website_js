@@ -28,7 +28,7 @@ $total = $subtotal + $deliveryFee;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Basket - Meuble Confort</title>
-    <link rel="stylesheet" href="basket.css">
+    <link rel="stylesheet" href="basketStyle.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Italianno&display=swap" rel="stylesheet">
 </head>
@@ -97,7 +97,7 @@ $total = $subtotal + $deliveryFee;
             </div>
         </section>
     </main>
-    <div id="address-form" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:20px; border:1px solid #ccc; z-index:1000; max-width:500px; width:90%;">
+    <div id="address-form" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);  ">
         <form method="post" action="process_order.php">
             <h3>Enter Your Delivery Address</h3>
             <div style="margin-bottom:15px;">
