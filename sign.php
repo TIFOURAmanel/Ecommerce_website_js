@@ -34,6 +34,14 @@ function handleSignIn() {
             $_SESSION['first_name'] = $user['first_name'];
             $_SESSION['role_user'] = $user['role_user'];
             
+            $stmt = $pdo->prepare("SELECT cart_id FROM shopping_carts WHERE user_id = ?");
+            $stmt->execute([$user['user_id']]);
+            $cart = $stmt->fetch();
+            
+            if ($cart) {
+                $_SESSION['cart_id'] = $cart['cart_id'];
+                }
+            
             // Set "remember me" cookie if checked
             /*
             if (isset($_POST['remember'])) {
@@ -110,11 +118,20 @@ function handleSignUp() {
         $userId = $pdo->lastInsertId();
         $pdo->commit();
         
+        // Create cart for user in bdd
+        $pdo->beginTransaction();
+        $stmt = $pdo->prepare("INSERT INTO shopping_carts ( user_id) VALUES ( ?)");
+        $stmt->execute([$userId]);
+        $cartId = $pdo->lastInsertId();
+        
+        $pdo->commit();
+
         // Registration successful - log user in
         $_SESSION['user_id'] = $userId;
         $_SESSION['email'] = $email;
         $_SESSION['first_name'] = $firstName;
         $_SESSION['role_user'] = 'client';
+        $_SESSION['cart_id'] = $cartId;
         
         header("Location: landingPage.php");
         exit();
