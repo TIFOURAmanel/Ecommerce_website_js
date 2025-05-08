@@ -34,41 +34,32 @@ $total = $totalAmount + $deliveryFee;
 try {
     $pdo->beginTransaction();
     
-    // 1. Check stock quantities
-    foreach ($_SESSION['basket'] as $productId => $item) {
-        $stmt = $pdo->prepare("SELECT stock_quantity, name_prod FROM products WHERE product_id = ?");
-        $stmt->execute([$productId]);
-        $product = $stmt->fetch();
-        
-        if ($item['quantity'] > $product['stock_quantity']) {
-            throw new Exception("Insufficient stock for {$product['name_prod']}. Only {$product['stock_quantity']} available.");
-        }
-    }
+    // Call the stored procedure
+    $stmt = $pdo->prepare("CALL ProcessCustomerOrder(?, ?, ?)");
+    $stmt->execute([
+        $_SESSION['user_id'],
+        $_SESSION['order_address'],
+        $total
+    ]);
     
-    // 2. Create order
-    $stmt = $pdo->prepare("INSERT INTO orders (user_id, address , total_amount, order_date ) VALUES (?, ?,? , NOW() )");
-    $stmt->execute([$_SESSION['user_id'], $_SESSION['order_address'] , $total]  );
-    $orderId = $pdo->lastInsertId();
+    // Get the order ID - proper handling of result set
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    $orderId = $result['order_id'];
     
-    // 3. Add order items and update stock
-    foreach ($_SESSION['basket'] as $productId => $item) {
-        // Add to order_items
-        $stmt = $pdo->prepare("INSERT INTO order_items (order_id, product_id, quantity) VALUES (?, ?, ?)");
-        $stmt->execute([$orderId, $productId, $item['quantity']]);
-        
-        // Update stock
-        $stmt = $pdo->prepare("UPDATE products SET stock_quantity = stock_quantity - ? WHERE product_id = ?");
-        $stmt->execute([$item['quantity'], $productId]);
-    }
+
     
     $pdo->commit();
     
-    // Clear cart and address
-    unset($_SESSION['basket']);
+    if (!$orderId) {
+        throw new Exception("Failed to retrieve order ID");
+    }
+    
+    // Clear address
     unset($_SESSION['order_address']);
     
     // Redirect to success page
     header("Location: order_success.php?order_id=$orderId");
+    exit;
     
 } catch (Exception $e) {
     $pdo->rollBack();

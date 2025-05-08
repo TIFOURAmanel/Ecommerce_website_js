@@ -104,3 +104,71 @@ BEGIN
 END //
 
 DELIMITER ;
+
+
+--procédure stockée qui permet de finaliser une commande et de vider le panier une fois la commande validée
+DELIMITER //
+
+CREATE PROCEDURE ProcessCustomerOrder(
+    IN p_user_id INT,
+    IN p_delivery_address VARCHAR(255),
+    IN p_total_amount DECIMAL(16,4)
+)
+BEGIN
+    DECLARE v_cart_id INT;
+    DECLARE v_order_id INT;
+    DECLARE v_done INT DEFAULT FALSE;
+    DECLARE v_product_id INT;
+    DECLARE v_quantity INT;
+    DECLARE v_price DECIMAL(10,4);
+    DECLARE v_item_count INT DEFAULT 0;
+    
+    -- Start transaction
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        RESIGNAL;
+    END;
+    
+    START TRANSACTION;
+    
+    -- Get the user's cart ID with validation
+    SELECT cart_id INTO v_cart_id 
+    FROM shopping_carts 
+    WHERE user_id = p_user_id;
+    
+    IF v_cart_id IS NULL THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'No shopping cart found for this user';
+    END IF;
+    
+    -- Check if cart has items
+    SELECT COUNT(*) INTO v_item_count FROM cart_items WHERE cart_id = v_cart_id;
+    IF v_item_count = 0 THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Shopping cart is empty';
+    END IF;
+    
+    -- Create the order
+    INSERT INTO orders (user_id, address, total_amount, order_date)
+    VALUES (p_user_id, p_delivery_address, p_total_amount, NOW());
+    
+    SET v_order_id = LAST_INSERT_ID();
+    
+    -- Process cart items directly without cursor (more efficient)
+    INSERT INTO order_items (order_id, product_id, quantity)
+    SELECT v_order_id, product_id, quantity
+    FROM cart_items 
+    WHERE cart_id = v_cart_id;
+    
+    -- Clear the cart
+    DELETE FROM cart_items WHERE cart_id = v_cart_id;
+    
+    -- Commit transaction
+    COMMIT;
+    
+    -- Return the order ID
+    SELECT v_order_id AS order_id;
+END //
+
+DELIMITER ;
