@@ -138,53 +138,74 @@ $total = $totalAmount + $deliveryFee;
 <body>
 <?php include('header.php'); ?>
 
-    <main>
-        <div class="confirmation-container">
-            <h2>Confirm Your Order</h2>
-            <p><strong>Delivery Address:</strong> <?= htmlspecialchars($_SESSION['order_address']) ?></p>
+<main>
+    <div class="confirmation-container">
+        <h2>Confirm Your Order</h2>
+        <p><strong>Delivery Address:</strong> <?= htmlspecialchars($_SESSION['order_address']) ?></p>
+        
+        <div class="order-summary">
+            <h3>Order Summary</h3>
+            <?php
+            // Call the stored procedure
+            $userId = $_SESSION['user_id']; // Assuming user ID is stored in session
+            $stmt = $pdo->prepare("CALL GetCustomerCart(?)");
+            $stmt->execute([$userId]);
             
-            <div class="order-summary">
-    <h3>Order Summary</h3>
-    <?php foreach ($_SESSION['basket'] as $productId => $item): ?>
-        <?php
-        $stmt = $pdo->prepare("SELECT name_prod, price FROM products WHERE product_id = ?");
-        $stmt->execute([$productId]);
-        $product = $stmt->fetch();
-        ?>
-        <?php if ($product): ?>
-            <div class="order-item">
-                <span><?= htmlspecialchars($product['name_prod']) ?> (x<?= $item['quantity'] ?>)</span>
-                <span>$<?= number_format($product['price'] * $item['quantity'], 2) ?></span>
-            </div>
-        <?php endif; ?>
-    <?php endforeach; ?>
-    
-    <div class="summary-row">
-        <span>Subtotal (<?= $itemCount ?> items)</span>
-        <span>$<?= number_format($totalAmount, 2) ?></span>
-    </div>
-    <div class="summary-row">
-        <span>Delivery</span>
-        <span>$<?= number_format($deliveryFee, 2) ?></span>
-    </div>
-    <div class="summary-row total">
-        <span>Total</span>
-        <span>$<?= number_format($total, 2) ?></span>
-    </div>
-</div>
+            // First result set contains cart summary
+            $cartSummary = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            <form method="post">
-                <div class="action-buttons">
-                    <button type="submit" name="confirm_yes" class="btn btn-primary">
-                        Confirm Order
-                    </button>
-                    <a href="basket.php" class="btn btn-secondary">
-                        Cancel
-                    </a>
+            // Second result set contains cart items
+            $stmt->nextRowset();
+            $cartItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Calculate totals
+            $subtotal = 0;
+            $itemCount = 0;
+            
+            foreach ($cartItems as $item) {
+                $subtotal += $item['prix_total'];
+                $itemCount += $item['quantity'];
+            }
+            
+            $deliveryFee = 1000; // Example delivery fee
+            $total = $subtotal + $deliveryFee;
+            ?>
+            
+            <?php foreach ($cartItems as $item): ?>
+                <div class="order-item">
+                    <span><?= htmlspecialchars($item['nom_produit']) ?> (x<?= $item['quantity'] ?>)</span>
+                    <span>$<?= number_format($item['prix_total'], 2) ?></span>
                 </div>
-            </form>
+            <?php endforeach; ?>
+            
+            <div class="summary-row">
+                <span>Subtotal (<?= $itemCount ?> items)</span>
+                <span>$<?= number_format($subtotal, 2) ?></span>
+            </div>
+            <div class="summary-row">
+                <span>Delivery</span>
+                <span>$<?= number_format($deliveryFee, 2) ?></span>
+            </div>
+            <div class="summary-row total">
+                <span>Total</span>
+                <span>$<?= number_format($total, 2) ?></span>
+            </div>
         </div>
-    </main>
+        
+        <form method="post">
+            <div class="action-buttons">
+                <button type="submit" name="confirm_yes" class="btn btn-primary">
+                    Confirm Order
+                </button>
+                <a href="basket.php" class="btn btn-secondary">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</main>
+
+<?php include('footer.php'); ?>
 
     <?php include('footer.php'); ?>
 </body>
