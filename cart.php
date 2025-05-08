@@ -16,12 +16,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Validate quantity
     if ($quantity < 1) $quantity = 1;
-    
+
+    $stmt = $pdo->prepare("SELECT price FROM products WHERE product_id = ?");
+    $stmt->execute([$productId]);
+    $priceData = $stmt->fetch(PDO::FETCH_ASSOC); // Fetch price data as an associative array
+    $price = $priceData['price']; // Access the price value
+
     if ($action === 'add') {
-        $stmt = $pdo->prepare("SELECT price FROM products WHERE product_id = ?");
-        $stmt->execute([$productId]);
-        $priceData = $stmt->fetch(PDO::FETCH_ASSOC); // Fetch price data as an associative array
-        $price = $priceData['price']; // Access the price value
     
         // Add/update product in basket
         if (isset($_SESSION['basket'][$productId])) {
@@ -29,8 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
              // add cart items quantity to bdd
              $pdo->beginTransaction();
-             $stmt = $pdo->prepare("UPDATE cart_items SET  quantity = quantity + ? , price = price + ? WHERE cart_id = ? AND product_id = ? ");
-             $stmt->execute([ $quantity , $price * $quantity, $cartId, $productId]);
+             $stmt = $pdo->prepare("UPDATE cart_items SET  quantity = quantity + ? WHERE cart_id = ? AND product_id = ? ");
+             $stmt->execute([ $quantity ,  $cartId, $productId]);
              $pdo->commit();
         } else {
             // You should fetch price from database here for security
@@ -41,13 +42,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
              $pdo->beginTransaction();
              // add cart items to bdd
              $stmt = $pdo->prepare("INSERT INTO cart_items ( cart_id , product_id , quantity , price) VALUES ( ?, ? ,? ,?)");
-             $stmt->execute([ $cartId , $productId , $quantity , $price * $quantity ]);
+             $stmt->execute([ $cartId , $productId , $quantity , $price  ]);
              $pdo->commit();
         }
     } 
     elseif ($action === 'remove') {
         // Remove product from basket
         unset($_SESSION['basket'][$productId]);
+        $pdo->beginTransaction();
+        $stmt = $pdo->prepare("DELETE FROM cart_items WHERE cart_id = ? AND product_id = ?");
+        $stmt->execute([ $cartId , $productId]);
+        $pdo->commit();
+
     }
     
     // Redirect back to prevent form resubmission

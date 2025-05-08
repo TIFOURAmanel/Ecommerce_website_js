@@ -21,7 +21,6 @@ if (!empty($_SESSION['basket'])) {
 }
 $total = $subtotal + $deliveryFee;
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,33 +39,55 @@ $total = $subtotal + $deliveryFee;
             <h1 class="section-title">Your Basket</h1>
             
             <div class="basket-container">
-                <?php if (empty($_SESSION['basket'])): ?>
+                <?php 
+                // Call the stored procedure to get cart items
+                $userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+                
+                if ($userId) {
+                    $stmt = $pdo->prepare("CALL GetCustomerCart(?)");
+                    $stmt->execute([$userId]);
+                    
+                    // First result set contains cart summary (we skip it)
+                    $stmt->nextRowset();
+                    
+                    // Second result set contains cart items
+                    $cartItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    
+                    // Calculate totals
+                    $subtotal = 0;
+                    $itemCount = 0;
+                    
+                    foreach ($cartItems as $item) {
+                        $subtotal += $item['prix_total'];
+                        $itemCount += $item['quantity'];
+                    }
+                    
+                    $deliveryFee = 5.00; // Example delivery fee
+                    $total = $subtotal + $deliveryFee;
+                }
+                
+                if (empty($cartItems)): ?>
                     <div class="empty-basket">
                         <p>Your basket is empty</p>
                         <a href="landingPage.php#catalog" class="continue-shopping">Continue Shopping</a>
                     </div>
                 <?php else: ?>
                     <div class="basket-items">
-                        <?php foreach ($_SESSION['basket'] as $productId => $item): 
-                            // Fetch product details from database for better info
-                            $stmt = $pdo->prepare("SELECT name_prod, description_prod, price ,image_url FROM products WHERE product_id = ?");
-                            $stmt->execute([$productId]);
-                            $product = $stmt->fetch();
-                        ?>
-                            <div class="basket-item" data-product-id="<?= $productId ?>">
-                                <img src="<?= htmlspecialchars($product['image_url']) ?>" alt="<?= htmlspecialchars($product['name_prod']) ?>" class="item-image">
+                        <?php foreach ($cartItems as $item): ?>
+                            <div class="basket-item" data-product-id="<?= $item['product_id'] ?>">
+                                <img src="<?= htmlspecialchars($item['image_url']) ?>" alt="<?= htmlspecialchars($item['nom_produit']) ?>" class="item-image">
                                 <div class="item-details">
-                                    <h3 class="item-name"><?= htmlspecialchars($product['name_prod']) ?></h3>
-                                    <p class="item-desc"><?= htmlspecialchars($product['description_prod']) ?></p>
+                                    <h3 class="item-name"><?= htmlspecialchars($item['nom_produit']) ?></h3>
+                                    <p class="item-desc"><?= htmlspecialchars($item['description']) ?></p>
                                     <div class="item-controls">
-                                        <button class="quantity-btn minus" onclick="updateQuantity(<?= $productId ?>, -1)">-</button>
+                                        <button class="quantity-btn minus" onclick="updateQuantity(<?= $item['product_id'] ?>, -1)">-</button>
                                         <span class="quantity"><?= $item['quantity'] ?></span>
-                                        <button class="quantity-btn plus" onclick="updateQuantity(<?= $productId ?>, 1)">+</button>
+                                        <button class="quantity-btn plus" onclick="updateQuantity(<?= $item['product_id'] ?>, 1)">+</button>
                                     </div>
                                 </div>
                                 <div class="item-price">
-                                    <span class="price">$<?= number_format($product['price'], 2) ?></span>
-                                    <button class="remove-btn" onclick="removeItem(<?= $productId ?>)">Remove</button>
+                                    <span class="price"><?= number_format($item['prix_unitaire'], 2) ?>da</span>
+                                    <button class="remove-btn" onclick="removeItem(<?= $item['product_id'] ?>)">Remove</button>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -89,15 +110,15 @@ $total = $subtotal + $deliveryFee;
                             </div>
                         </div>
                         <div class="checkout-section">
-    <button type="button" class="checkout-btn" onclick="showAddressForm()">Validate order</button>
-                        <a href="landingPage.php#catalog" class="continue-shopping">Continue Shopping</a>
-                        
+                            <button type="button" class="checkout-btn" onclick="showAddressForm()">Validate order</button>
+                            <a href="landingPage.php#catalog" class="continue-shopping">Continue Shopping</a>
+                        </div>
                     </div>
                 <?php endif; ?>
             </div>
         </section>
     </main>
-    <div id="address-form" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);  ">
+    <div id="address-form" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);">
         <form method="post" action="process_order.php">
             <h3>Enter Your Delivery Address</h3>
             <div style="margin-bottom:15px;">
@@ -112,7 +133,6 @@ $total = $subtotal + $deliveryFee;
             </div>
         </form>
     </div>
-</div>
 <?php include('footer.php'); ?>
 
 
