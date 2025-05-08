@@ -16,16 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id']) && isset(
         try {
             $pdo->beginTransaction();
 
-            // 1. Restore stock quantities
-            $items = $pdo->prepare("SELECT product_id, quantity FROM order_items WHERE order_id = ?");
-            $items->execute([$orderId]);
-
-            foreach ($items as $item) {
-                $pdo->prepare("UPDATE products SET stock_quantity = stock_quantity + ? WHERE product_id = ?")
-                    ->execute([$item['quantity'], $item['product_id']]);
-            }
-
-            // 2. Update order status instead of deleting
+            //  Update order status instead of deleting
             $pdo->prepare("UPDATE orders SET state = 'cancelled' WHERE order_id = ?")->execute([$orderId]);
 
             $pdo->commit();

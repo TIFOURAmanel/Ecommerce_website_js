@@ -62,10 +62,6 @@ BEGIN
     SET p.stock_quantity = p.stock_quantity + oi.quantity
     WHERE oi.order_id = NEW.order_id;
     
-    -- 2. Marquer la commande comme annulée (au lieu de la supprimer)
-    UPDATE orders 
-    SET state = 'cancelled' 
-    WHERE order_id = NEW.order_id;
 END //
 
 DELIMITER ;
