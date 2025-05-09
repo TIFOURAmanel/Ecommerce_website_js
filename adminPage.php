@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once ('connection.php');
+require_once('connection.php');
 
 // Handle form submissions
 $pdo = getConnection();
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_POST['product_image']
         ]);
     }
-    
+
     if (isset($_POST['add_category'])) {
         // Add category to database
         $stmt = $pdo->prepare("INSERT INTO categories (name_categ, description_categ) VALUES (?, ?)");
@@ -26,17 +26,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_POST['category_description']
         ]);
     }
-    
+
     if (isset($_POST['delete_product'])) {
         $stmt = $pdo->prepare("DELETE FROM products WHERE product_id = ?");
         $stmt->execute([$_POST['product_id']]);
     }
-    
+
     if (isset($_POST['delete_category'])) {
         $stmt = $pdo->prepare("DELETE FROM categories WHERE category_id = ?");
         $stmt->execute([$_POST['category_id']]);
     }
-     if (isset($_POST['delete_user'])) {
+    if (isset($_POST['delete_user'])) {
         $stmt = $pdo->prepare("DELETE FROM users WHERE user_id = ?");
         $stmt->execute([$_POST['user_id']]);
     }
@@ -67,6 +67,7 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -74,6 +75,7 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
     <link rel="stylesheet" href="adminStyle.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
+
 <body>
     <!-- Sidebar -->
     <div class="sidebar">
@@ -125,22 +127,22 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
     <div class="main-content">
         <!-- Dashboard Section -->
         <div id="dashboard-section">
-        <div class="header">
-    <h2>Dashboard</h2>
-    <div class="user-info">
-        <?php if(isset($_SESSION['user_id'])): ?>
-            <div class="logout-container">
-                <button type="button" class="logout-btn" onclick="confirmLogout()">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
-                <span class="user-name">
-                    <img src="images/User.png" alt="User">
-                    Admin User
-                </span>
+            <div class="header">
+                <h2>Dashboard</h2>
+                <div class="user-info">
+                    <?php if (isset($_SESSION['user_id'])): ?>
+                        <div class="logout-container">
+                            <button type="button" class="logout-btn" onclick="confirmLogout()">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                            <span class="user-name">
+                                <img src="images/User.png" alt="User">
+                                Admin User
+                            </span>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
-        <?php endif; ?>
-    </div>
-</div>
 
             <!-- Cards Section -->
             <div class="cards">
@@ -216,25 +218,26 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
                     </thead>
                     <tbody>
                         <?php foreach ($products as $product): ?>
-                        <tr>
-                            <td><?= $product['product_id'] ?></td>
-                            <td><?= htmlspecialchars($product['name_prod']) ?></td>
-                            <td><?= htmlspecialchars($product['category_name']) ?></td>
-                            <td><?= number_format($product['price'], 4) ?> da</td>
-                            <td><?= $product['stock_quantity'] ?></td>
-                            <td>
-                                <span class="status <?= $product['stock_quantity'] > 0 ? 'active' : 'inactive' ?>">
-                                    <?= $product['stock_quantity'] > 0 ? 'Active' : 'Out of Stock' ?>
-                                </span>
-                            </td>
-                            <td>
-                                
-                                <form method="POST" style="display:inline;">
-                                    <input type="hidden" name="product_id" value="<?= $product['product_id'] ?>">
-                                    <button type="submit" name="delete_product" class="action-btn delete-btn">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td><?= $product['product_id'] ?></td>
+                                <td><?= htmlspecialchars($product['name_prod']) ?></td>
+                                <td><?= htmlspecialchars($product['category_name']) ?></td>
+                                <td><?= number_format($product['price'], 4) ?> da</td>
+                                <td><?= $product['stock_quantity'] ?></td>
+                                <td>
+                                    <span class="status <?= $product['stock_quantity'] > 0 ? 'active' : 'inactive' ?>">
+                                        <?= $product['stock_quantity'] > 0 ? 'Active' : 'Out of Stock' ?>
+                                    </span>
+                                </td>
+                                <td>
+
+                                    <form method="POST" style="display:inline;">
+                                        <input type="hidden" name="product_id" value="<?= $product['product_id'] ?>">
+                                        <button type="submit" name="delete_product"
+                                            class="action-btn delete-btn">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -268,25 +271,26 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
                     </thead>
                     <tbody>
                         <?php foreach ($categories as $category): ?>
-                        <tr>
-                            <td><?= $category['category_id'] ?></td>
-                            <td><?= htmlspecialchars($category['name_categ']) ?></td>
-                            <td><?= htmlspecialchars($category['description_categ']) ?></td>
-                            <td><?= $category['product_count'] ?></td>
-                            <td>
-                                
-                                <form method="POST" style="display:inline;">
-                                    <input type="hidden" name="category_id" value="<?= $category['category_id'] ?>">
-                                    <button type="submit" name="delete_category" class="action-btn delete-btn">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td><?= $category['category_id'] ?></td>
+                                <td><?= htmlspecialchars($category['name_categ']) ?></td>
+                                <td><?= htmlspecialchars($category['description_categ']) ?></td>
+                                <td><?= $category['product_count'] ?></td>
+                                <td>
+
+                                    <form method="POST" style="display:inline;">
+                                        <input type="hidden" name="category_id" value="<?= $category['category_id'] ?>">
+                                        <button type="submit" name="delete_category"
+                                            class="action-btn delete-btn">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
         </div>
-        
+
         <div id="orders-section" style="display:none;">
             <div class="header">
                 <h2>Orders</h2>
@@ -315,20 +319,20 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
                     </thead>
                     <tbody>
                         <?php foreach ($orders as $order): ?>
-                        <tr>
-                            <td><?= $order['order_id'] ?></td>
-                            <td><?= htmlspecialchars($order['customer_name']) ?></td>
-                            <td><?= date('M j, Y', strtotime($order['order_date'])) ?></td>
-                            <td><?= $order['item_count'] ?></td>
-                            <td>$<?= number_format($order['total_amount'], 2) ?></td>
-                            <td><?= htmlspecialchars($order['payment_method']) ?></td>
-                            <td>
-                                <span class="status active">Completed</span>
-                            </td>
-                            <td>
-                                <button class="action-btn view-btn">View</button>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td><?= $order['order_id'] ?></td>
+                                <td><?= htmlspecialchars($order['customer_name']) ?></td>
+                                <td><?= date('M j, Y', strtotime($order['order_date'])) ?></td>
+                                <td><?= $order['item_count'] ?></td>
+                                <td>$<?= number_format($order['total_amount'], 2) ?></td>
+                                <td><?= htmlspecialchars($order['payment_method']) ?></td>
+                                <td>
+                                    <span class="status active">Completed</span>
+                                </td>
+                                <td>
+                                    <button class="action-btn view-btn">View</button>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -362,20 +366,22 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
                     </thead>
                     <tbody>
                         <?php foreach ($users as $user): ?>
-                        <tr>
-                            <td><?= $user['user_id'] ?></td>
-                            <td><?= htmlspecialchars($user['first_name'] . ' ' . htmlspecialchars($user['last_name'])) ?></td>
-                            <td><?= htmlspecialchars($user['email']) ?></td>
-                            <td><?= ucfirst($user['role_user']) ?></td>
-                            <td><?= htmlspecialchars($user['city'] . ', ' . $user['country']) ?></td>
-                            <td>
-                                
-                                <form method="POST" style="display:inline;">
-                                    <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
-                                    <button type="submit" name="delete_user" class="action-btn delete-btn">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td><?= $user['user_id'] ?></td>
+                                <td><?= htmlspecialchars($user['first_name'] . ' ' . htmlspecialchars($user['last_name'])) ?>
+                                </td>
+                                <td><?= htmlspecialchars($user['email']) ?></td>
+                                <td><?= ucfirst($user['role_user']) ?></td>
+                                <td><?= htmlspecialchars($user['city'] . ', ' . $user['country']) ?></td>
+                                <td>
+
+                                    <form method="POST" style="display:inline;">
+                                        <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
+                                        <button type="submit" name="delete_user"
+                                            class="action-btn delete-btn">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -401,7 +407,8 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
                     <select id="product-category" name="product_category" required>
                         <option value="">Select Category</option>
                         <?php foreach ($categories as $category): ?>
-                            <option value="<?= $category['category_id'] ?>"><?= htmlspecialchars($category['name_categ']) ?></option>
+                            <option value="<?= $category['category_id'] ?>"><?= htmlspecialchars($category['name_categ']) ?>
+                            </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -455,43 +462,43 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
         </div>
     </div>
 
-   <!-- Logout Confirmation Modal -->
-<div class="modal" id="logoutModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>Logout</h3>
-            <button class="close-btn" onclick="closeLogoutModal()">&times;</button>
-        </div>
-        <div class="modal-body">
-            <p>Are you sure you want to log out?</p>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" onclick="closeLogoutModal()">No</button>
-            <form method="post" action="sign.php" style="display: inline;">
-                <input type="hidden" name="logout" value="1">
-                <button type="submit" class="btn btn-primary">Yes</button>
-            </form>
+    <!-- Logout Confirmation Modal -->
+    <div class="modal" id="logoutModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Logout</h3>
+                <button class="close-btn" onclick="closeLogoutModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to log out?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeLogoutModal()">No</button>
+                <form method="post" action="sign.php" style="display: inline;">
+                    <input type="hidden" name="logout" value="1">
+                    <button type="submit" class="btn btn-primary">Yes</button>
+                </form>
+            </div>
         </div>
     </div>
-</div>
     <script>
-       function confirmLogout() {
-    document.getElementById('logoutModal').style.display = 'flex';
-}
+        function confirmLogout() {
+            document.getElementById('logoutModal').style.display = 'flex';
+        }
 
-function closeLogoutModal() {
-    document.getElementById('logoutModal').style.display = 'none';
-}
+        function closeLogoutModal() {
+            document.getElementById('logoutModal').style.display = 'none';
+        }
         // Section Navigation
         function showSection(sectionId) {
             // Hide all sections
             document.querySelectorAll('.main-content > div').forEach(section => {
                 section.style.display = 'none';
             });
-            
+
             // Show selected section
             document.getElementById(sectionId).style.display = 'block';
-            
+
             // Update active menu item
             document.querySelectorAll('.sidebar-menu li').forEach(item => {
                 item.classList.remove('active');
@@ -500,7 +507,7 @@ function closeLogoutModal() {
         }
 
         // Initialize to show dashboard by default
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             showSection('dashboard-section');
         });
 
@@ -536,4 +543,5 @@ function closeLogoutModal() {
         });
     </script>
 </body>
+
 </html>

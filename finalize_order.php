@@ -20,7 +20,7 @@ if (!empty($_SESSION['basket'])) {
         $stmt = $pdo->prepare("SELECT price FROM products WHERE product_id = ?");
         $stmt->execute([$productId]);
         $product = $stmt->fetch(PDO::FETCH_ASSOC);
-        
+
         if ($product) {
             $totalAmount += $product['price'] * $item['quantity'];
             $itemCount += $item['quantity'];
@@ -33,7 +33,7 @@ $total = $totalAmount + $deliveryFee;
 
 try {
     $pdo->beginTransaction();
-    
+
     // Call the stored procedure
     $stmt = $pdo->prepare("CALL ProcessCustomerOrder(?, ?, ?)");
     $stmt->execute([
@@ -41,26 +41,26 @@ try {
         $_SESSION['order_address'],
         $total
     ]);
-    
+
     // Get the order ID - proper handling of result set
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $orderId = $result['order_id'];
-    
 
-    
+
+
     $pdo->commit();
-    
+
     if (!$orderId) {
         throw new Exception("Failed to retrieve order ID");
     }
-    
+
     // Clear address
     unset($_SESSION['order_address']);
-    
+
     // Redirect to success page
     header("Location: order_success.php?order_id=$orderId");
     exit;
-    
+
 } catch (Exception $e) {
     $pdo->rollBack();
     $_SESSION['error'] = $e->getMessage();

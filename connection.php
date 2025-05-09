@@ -18,7 +18,7 @@ function getConnection() {
                 PDO::ATTR_EMULATE_PREPARES => false 
             ]
         );
-        error_log("✅ Database connection successful");
+        error_log(" Database connection successful");
 
         return $pdo;
         

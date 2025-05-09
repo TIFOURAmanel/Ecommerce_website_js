@@ -19,13 +19,15 @@ $stmt->closeCursor(); // Required when calling stored procedures
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>My Orders</title>
     <link rel="stylesheet" href="order.css">
 </head>
+
 <body>
-<?php include('header.php'); ?>
+    <?php include('header.php'); ?>
     <h2>My Orders</h2>
 
     <?php if (empty($orders)): ?>
@@ -41,7 +43,8 @@ $stmt->closeCursor(); // Required when calling stored procedures
 
                 <?php if ($order['status'] !== 'cancelled'): ?>
                     <div class="order-actions">
-                        <form method="post" action="cancel_order.php" onsubmit="return confirm('Are you sure you want to cancel this order?');">
+                        <form method="post" action="cancel_order.php"
+                            onsubmit="return confirm('Are you sure you want to cancel this order?');">
                             <input type="hidden" name="order_id" value="<?= $order['order_id'] ?>">
                             <button type="submit" class="btn-cancel">Cancel Order</button>
                         </form>
@@ -52,85 +55,85 @@ $stmt->closeCursor(); // Required when calling stored procedures
     <?php endif; ?>
 
     <?php include('footer.php'); ?>
-   <script>
-// Animate orders on page load
-document.addEventListener('DOMContentLoaded', function() {
-    // Animate the title
-    anime({
-        targets: 'h2',
-        translateY: [-30, 0],
-        opacity: [0, 1],
-        duration: 800,
-        easing: 'easeOutExpo'
-    });
-    
-    // Animate each order card with stagger
-    anime({
-        targets: '.order',
-        translateY: [40, 0],
-        opacity: [0, 1],
-        duration: 800,
-        delay: anime.stagger(100, {start: 300}),
-        easing: 'easeOutExpo'
-    });
-    
-    // Add hover animation to order cards
-    const orders = document.querySelectorAll('.order');
-    orders.forEach(order => {
-        order.addEventListener('mouseenter', () => {
+    <script>
+        // Animate orders on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            // Animate the title
             anime({
-                targets: order,
-                scale: 1.02,
-                duration: 300,
-                easing: 'easeInOutQuad'
+                targets: 'h2',
+                translateY: [-30, 0],
+                opacity: [0, 1],
+                duration: 800,
+                easing: 'easeOutExpo'
             });
-        });
-        
-        order.addEventListener('mouseleave', () => {
-            anime({
-                targets: order,
-                scale: 1,
-                duration: 300,
-                easing: 'easeInOutQuad'
-            });
-        });
-    });
-    
-    // Add pulse animation to cancel buttons
-    const cancelBtns = document.querySelectorAll('.btn-cancel');
-    cancelBtns.forEach(btn => {
-        btn.addEventListener('mouseenter', () => {
-            anime({
-                targets: btn,
-                scale: 1.05,
-                duration: 300,
-                easing: 'easeInOutQuad'
-            });
-        });
-        
-        btn.addEventListener('mouseleave', () => {
-            anime({
-                targets: btn,
-                scale: 1,
-                duration: 300,
-                easing: 'easeInOutQuad'
-            });
-        });
-    });
-    
-    // Add animation for empty state
-    const emptyState = document.querySelector('p:not(.order p)');
-    if (emptyState) {
-        anime({
-            targets: emptyState,
-            scale: [0.9, 1],
-            opacity: [0, 1],
-            duration: 800,
-            easing: 'easeOutElastic'
-        });
-    }
-});
-</script>
-</body>
-</html>
 
+            // Animate each order card with stagger
+            anime({
+                targets: '.order',
+                translateY: [40, 0],
+                opacity: [0, 1],
+                duration: 800,
+                delay: anime.stagger(100, { start: 300 }),
+                easing: 'easeOutExpo'
+            });
+
+            // Add hover animation to order cards
+            const orders = document.querySelectorAll('.order');
+            orders.forEach(order => {
+                order.addEventListener('mouseenter', () => {
+                    anime({
+                        targets: order,
+                        scale: 1.02,
+                        duration: 300,
+                        easing: 'easeInOutQuad'
+                    });
+                });
+
+                order.addEventListener('mouseleave', () => {
+                    anime({
+                        targets: order,
+                        scale: 1,
+                        duration: 300,
+                        easing: 'easeInOutQuad'
+                    });
+                });
+            });
+
+            // Add pulse animation to cancel buttons
+            const cancelBtns = document.querySelectorAll('.btn-cancel');
+            cancelBtns.forEach(btn => {
+                btn.addEventListener('mouseenter', () => {
+                    anime({
+                        targets: btn,
+                        scale: 1.05,
+                        duration: 300,
+                        easing: 'easeInOutQuad'
+                    });
+                });
+
+                btn.addEventListener('mouseleave', () => {
+                    anime({
+                        targets: btn,
+                        scale: 1,
+                        duration: 300,
+                        easing: 'easeInOutQuad'
+                    });
+                });
+            });
+
+            // Add animation for empty state
+            const emptyState = document.querySelector('p:not(.order p)');
+            if (emptyState) {
+                anime({
+                    targets: emptyState,
+                    scale: [0.9, 1],
+                    opacity: [0, 1],
+                    duration: 800,
+                    easing: 'easeOutElastic'
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
