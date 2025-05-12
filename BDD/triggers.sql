@@ -1,6 +1,5 @@
 
 
-
 --Trigger pour mettre à jour le stock après validation d'une commande
 DELIMITER //
 

@@ -50,7 +50,7 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meuble Confort</title>
-    <link rel="stylesheet" href="landing_Style.css">
+    <link rel="stylesheet" href="landingStyle.css">
 
 
 </head>
@@ -103,7 +103,7 @@ try {
         <section class="about-section" id="us">
             <h2 class="section-title">About Us</h2>
             <div class="about-container">
-                <img src="images/logocake.png" alt="Cake logo" class="about-logo">
+                <img src="images/meuble.png" alt="meubleConfort" class="about-logo">
                 <div class="about-content">
                     <h3 class="about-subtitle">Our Shop</h3>
                     <p class="about-text">
@@ -122,7 +122,7 @@ try {
         </section>
     </main>
 
-    <!-- Product Modal (shown when product_id is in URL) -->
+    <!-- Product Modal (shown when product is clicked) -->
     <?php if ($productDetails): ?>
         <div class="modal-overlay">
             <div class="product-modal">
@@ -134,7 +134,7 @@ try {
                     </div>
                     <div class="modal-details">
                         <h2><?= htmlspecialchars($productDetails['name_prod']) ?></h2>
-                        <div class="modal-price">$<?= number_format($productDetails['price'], 2) ?></div>
+                        <div class="modal-price"><?= number_format($productDetails['price'], 2) ?>da</div>
                         <p class="modal-description"><?= htmlspecialchars($productDetails['description_prod']) ?></p>
 
                         <form method="post" action="cart.php">
@@ -160,8 +160,21 @@ try {
     <?php include('footer.php'); ?>
 
     <script>
-
-    </script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const heroImage = document.querySelector('.hero-image');
+    
+    // Délai minimal pour s'assurer que le CSS est chargé
+    setTimeout(() => {
+      heroImage.classList.add('loaded');
+      
+      // Optionnel : Effet parallaxe au scroll
+      window.addEventListener('scroll', function() {
+        const scrollPosition = window.pageYOffset;
+        heroImage.style.transform = `translateY(${scrollPosition * 0.1}px)`;
+      });
+    }, 100);
+  });
+</script>
 </body>
 
 </html>

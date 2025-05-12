@@ -1,5 +1,4 @@
 /* ===== Orders Page Styles ===== */
-/* Using your existing color scheme from landing page */
 :root {
     --primary-dark: #5E3023;      /* Deep maroon */
     --primary-color: #8B4513;     /* Rich brown */
@@ -13,7 +12,7 @@
     --shadow: 0 4px 12px rgba(94, 48, 35, 0.1);
   }
   
-  /* Base Styles - Works with your existing HTML classes */
+  /* Base Styles */
   body {
     font-family: 'Montserrat', sans-serif;
     background-color: var(--gray-light);
@@ -32,12 +31,12 @@
     content: '';
     display: block;
     width: 80px;
-    height: 4px;
+    height: 2px;
     background: var(--accent-color);
     margin: 1rem auto;
   }
   
-  /* Order Items - Your existing .order class */
+  /* Order Items  */
   .order {
     background: white;
     padding: 1.5rem;
@@ -68,7 +67,7 @@
     color: var(--primary-dark);
   }
   
-  /* Status Styles - Works with your existing status text */
+  /* Status Styles  */
   .order p strong:contains("Status:") + * {
     display: inline-block;
     padding: 0.3rem 0.8rem;
@@ -92,7 +91,7 @@
     color: #721C24;
   }
   
-  /* Cancel Button - Your existing .btn-cancel class */
+  /* Cancel Button  */
   .btn-cancel {
     background-color: var(--primary-dark);
     color: white;

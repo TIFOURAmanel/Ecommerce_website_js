@@ -1,6 +1,6 @@
 /* Color Variables */
 :root {
-  --beige-light: #f5f5dc;
+  --beige-light: rgb(244, 233, 227);
   --beige-medium: #e6e2d6;
   --beige-dark: #d2c8b8;
   --maroon-light: #8b4513;
