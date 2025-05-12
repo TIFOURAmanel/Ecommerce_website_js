@@ -8,6 +8,7 @@
   --maroon-dark: #4a1c13;
   --text-dark: #333;
   --text-light: #fff;
+  --primary-light: rgb(244, 233, 227);
 }
 
 /* Base Styles */
@@ -108,7 +109,7 @@
 }
 
 .logout-modal-content {
-  background-color: var(--beige-light);
+  background-color: var(--primary-light);
   padding: 2rem;
   border-radius: 8px;
   text-align: center;

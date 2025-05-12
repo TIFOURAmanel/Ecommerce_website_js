@@ -1,0 +1,73 @@
+ .confirmation-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .confirmation-success {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .confirmation-success h2 {
+            font-family: "Italianno", cursive;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .order-details {
+            margin-top: 2rem;
+            text-align: left;
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .order-details h3 {
+            font-family: "Montserrat", sans-serif;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .order-details p {
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+
+        .order-details strong {
+            color: var(--text-dark);
+        }
+
+        .confirmation-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+        }
+
+        .continue-shopping {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 0.8rem 2rem;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            font-family: "Montserrat", sans-serif;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .continue-shopping:hover {
+            background-color: var(--maroon-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }

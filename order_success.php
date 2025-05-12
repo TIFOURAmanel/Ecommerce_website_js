@@ -28,19 +28,19 @@ try {
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Confirmation</title>
-    <link rel="stylesheet" href="landingStyle.css">
+    <link rel="stylesheet" href="order_success.css">
 </head>
 
 <body>
 
-
-    <main style="max-width:800px; margin:20px auto; padding:20px;">
+    <?php include('header.php'); ?>
+    <main class="confirmation-container" style="max-width:800px; margin:20px auto; padding:20px;">
         <?php if ($orderId && $order): ?>
-            <div style="background:#dff0d8; color:#3c763d; padding:20px; border-radius:5px;">
+            <div class="confirmation-success" style="background:#dff0d8; color:#3c763d; padding:20px; border-radius:5px;">
                 <h2>Order Confirmed!</h2>
                 <p>Your order #<?= htmlspecialchars($orderId) ?> has been placed successfully.</p>
 
-                <div style="margin-top:20px; text-align:left; background:white; padding:15px; border-radius:4px;">
+                <div class="order-details" style="margin-top:20px; text-align:left; background:white; padding:15px; border-radius:4px;">
                     <h3>Order Details</h3>
                     <p><strong>Date:</strong> <?= date('F j, Y', strtotime($order['order_date'])) ?></p>
                     <p><strong>Delivery to:</strong> <?= htmlspecialchars($order['address']) ?></p>
@@ -48,18 +48,18 @@ try {
                 </div>
             </div>
         <?php else: ?>
-            <div style="background:#f2dede; color:#a94442; padding:20px; border-radius:5px;">
+            <div class="confirmation-error" style="background:#f2dede; color:#a94442; padding:20px; border-radius:5px;">
                 <h2>Order Not Found</h2>
                 <p>We couldn't verify your order details.</p>
             </div>
         <?php endif; ?>
 
-        <a href="landing.php"
+        <a href="landing.php" class="continue-shopping"
             style="display:inline-block; margin-top:20px; padding:10px 20px; background:var(--primary-color); color:white; text-decoration:none; border-radius:4px;">
             Continue Shopping
         </a>
     </main>
-
+    <?php include('footer.php'); ?>
 
 </body>
 

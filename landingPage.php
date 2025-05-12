@@ -51,7 +51,8 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meuble Confort</title>
     <link rel="stylesheet" href="landingStyle.css">
-
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Italianno&display=swap" rel="stylesheet">
 
 </head>
 
@@ -87,8 +88,8 @@ try {
                                 class="product-card">
                                 <img src="<?= htmlspecialchars($product['image_url']) ?>"
                                     alt="<?= htmlspecialchars($product['name_prod']) ?>" class="product-image">
-                                <h3><?= htmlspecialchars($product['name_prod']) ?></h3>
-                                <p class="price"><?= number_format($product['price'], 2) ?>da</p>
+                                <h3>  <?= htmlspecialchars($product['name_prod']) ?></h3>
+                                <p class="price">  <?= number_format($product['price'], 2) ?> da</p>
                             </a>
                         <?php endforeach; ?>
                     <?php else: ?>

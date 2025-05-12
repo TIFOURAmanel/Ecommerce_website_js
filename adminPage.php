@@ -72,7 +72,7 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="adminStyle.css">
+    <link rel="stylesheet" href="admin_Style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
@@ -310,9 +310,7 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
                             <th>Order ID</th>
                             <th>Customer</th>
                             <th>Date</th>
-                            <th>Items</th>
                             <th>Total</th>
-                            <th>Payment</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
@@ -323,9 +321,7 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
                                 <td><?= $order['order_id'] ?></td>
                                 <td><?= htmlspecialchars($order['customer_name']) ?></td>
                                 <td><?= date('M j, Y', strtotime($order['order_date'])) ?></td>
-                                <td><?= $order['item_count'] ?></td>
-                                <td>$<?= number_format($order['total_amount'], 2) ?></td>
-                                <td><?= htmlspecialchars($order['payment_method']) ?></td>
+                                <td><?= number_format($order['total_amount'], 2) ?>da</td>
                                 <td>
                                     <span class="status active">Completed</span>
                                 </td>

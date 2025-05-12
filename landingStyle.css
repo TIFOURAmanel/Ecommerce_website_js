@@ -15,7 +15,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Montserrat", sans-serif;
+  font-family: "Playfair Display", serif;
 }
 
 body {
@@ -138,6 +138,12 @@ h3 {
   color: var(--primary-color);
 }
 
+.product-card h3,
+.product-card .price {
+  color: rgb(20, 18, 18);
+  padding: 0 1.5rem; /* 0 en haut/bas, 1.5rem à gauche/droite */
+  margin-bottom: 0.5rem; /* Espace entre le nom et le prix */
+}
 /* Product Modal Styles */
 .modal-overlay {
   position: fixed;
@@ -182,7 +188,8 @@ h3 {
   border-radius: var(--border-radius);
 }
 .modal-details h2 {
-  color: var(--primary-color);
+  padding-top: 0.5rem;
+  color: var(--maroon-dark);
   margin-bottom: 1rem;
 }
 .modal-price {
@@ -248,12 +255,12 @@ h3 {
   padding: 0 2rem;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem;
+  gap: 12px;
   margin-top: 2rem;
 }
 
 .product-card {
-  width: 280px;
+  
   background: white;
   color: var(--primary-color);
   border-radius: var(--border-radius);
