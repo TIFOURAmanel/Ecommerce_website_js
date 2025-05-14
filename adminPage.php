@@ -27,6 +27,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
     }
 
+    if (isset($_POST['update_product'])) {
+        // Update product in database
+        $stmt = $pdo->prepare("UPDATE products SET 
+            name_prod = ?, 
+            category_id = ?, 
+            price = ?, 
+            stock_quantity = ?, 
+            description_prod = ?, 
+            image_url = ?
+            WHERE product_id = ?");
+        $stmt->execute([
+            $_POST['product_name'],
+            $_POST['product_category'],
+            $_POST['product_price'],
+            $_POST['product_stock'],
+            $_POST['product_description'],
+            $_POST['product_image'],
+            $_POST['product_id']
+        ]);
+    }
+
     if (isset($_POST['delete_product'])) {
         $stmt = $pdo->prepare("DELETE FROM products WHERE product_id = ?");
         $stmt->execute([$_POST['product_id']]);
@@ -72,7 +93,7 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="admin_Style.css">
+    <link rel="stylesheet" href="adminStyle.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
@@ -230,7 +251,16 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
                                     </span>
                                 </td>
                                 <td>
-
+                                    <button class="action-btn edit-btn" 
+        onclick="openEditModal(
+            <?= $product['product_id'] ?>,
+            '<?= addslashes($product['name_prod']) ?>',
+            <?= $product['category_id'] ?>,
+            <?= $product['price'] ?>,
+            <?= $product['stock_quantity'] ?>,
+            '<?= addslashes($product['description_prod']) ?>',
+            '<?= addslashes($product['image_url']) ?>'
+        )">Edit</button>
                                     <form method="POST" style="display:inline;">
                                         <input type="hidden" name="product_id" value="<?= $product['product_id'] ?>">
                                         <button type="submit" name="delete_product"
@@ -434,6 +464,54 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
         </div>
     </div>
 
+    <!-- Edit Product Modal -->
+<div class="modal" id="edit-product-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Edit Product</h3>
+            <button class="close-btn">&times;</button>
+        </div>
+        <form id="edit-product-form" method="POST">
+            <input type="hidden" id="edit-product-id" name="product_id">
+            <div class="form-group">
+                <label for="edit-product-name">Product Name</label>
+                <input type="text" id="edit-product-name" name="product_name" required>
+            </div>
+            <div class="form-group">
+                <label for="edit-product-category">Category</label>
+                <select id="edit-product-category" name="product_category" required>
+                    <option value="">Select Category</option>
+                    <?php foreach ($categories as $category): ?>
+                        <option value="<?= $category['category_id'] ?>"><?= htmlspecialchars($category['name_categ']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="edit-product-price">Price</label>
+                    <input type="number" id="edit-product-price" name="product_price" step="0.0001" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-product-stock">Stock Quantity</label>
+                    <input type="number" id="edit-product-stock" name="product_stock" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="edit-product-description">Description</label>
+                <textarea id="edit-product-description" name="product_description" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="edit-product-image">Image URL</label>
+                <input type="text" id="edit-product-image" name="product_image">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn close-btn">Cancel</button>
+                <button type="submit" name="update_product" class="btn">Update Product</button>
+            </div>
+        </form>
+    </div>
+</div>
+
     <!-- Add Category Modal -->
     <div class="modal" id="category-modal">
         <div class="modal-content">
@@ -477,6 +555,7 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
             </div>
         </div>
     </div>
+
     <script>
         function confirmLogout() {
             document.getElementById('logoutModal').style.display = 'flex';
@@ -507,12 +586,30 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
             showSection('dashboard-section');
         });
 
+        // Fonction pour ouvrir le modal d'édition
+function openEditModal(id, name, categoryId, price, stock, description, imageUrl) {
+    const modal = document.getElementById('edit-product-modal');
+    
+    // Remplir le formulaire avec les données du produit
+    document.getElementById('edit-product-id').value = id;
+    document.getElementById('edit-product-name').value = name;
+    document.getElementById('edit-product-category').value = categoryId;
+    document.getElementById('edit-product-price').value = price;
+    document.getElementById('edit-product-stock').value = stock;
+    document.getElementById('edit-product-description').value = description;
+    document.getElementById('edit-product-image').value = imageUrl;
+    
+    // Afficher le modal
+    modal.style.display = 'flex';
+}
+
         // Modal functionality
         const productModal = document.getElementById('product-modal');
         const categoryModal = document.getElementById('category-modal');
         const addProductBtn = document.getElementById('add-product-btn');
         const addCategoryBtn = document.getElementById('add-category-btn');
         const closeBtns = document.querySelectorAll('.close-btn');
+        const editProductModal = document.getElementById('edit-product-modal');
 
         addProductBtn?.addEventListener('click', () => {
             productModal.style.display = 'flex';
@@ -526,6 +623,7 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
             btn.addEventListener('click', () => {
                 productModal.style.display = 'none';
                 categoryModal.style.display = 'none';
+                editProductModal.style.display = 'none';
             });
         });
 
@@ -536,6 +634,9 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
             if (e.target === categoryModal) {
                 categoryModal.style.display = 'none';
             }
+             if (e.target === editProductModal) {
+        editProductModal.style.display = 'none';
+    }
         });
     </script>
 </body>

@@ -248,6 +248,10 @@ table th {
   cursor: pointer;
 }
 
+.edit-btn {
+    background-color: #ffc107;
+    color: #212529;
+}
 .delete-btn {
   background-color: #dc3545;
   color: white;
