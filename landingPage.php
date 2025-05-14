@@ -27,14 +27,14 @@ try {
 
     // Fetch products if category selected
     if ($selectedCategory) {
-        $stmt = $pdo->prepare("SELECT * FROM products WHERE category_id = ?");
+        $stmt = $pdo->prepare("SELECT * FROM products WHERE category_id = ? AND stock_quantity > 0");
         $stmt->execute([$selectedCategory]);
         $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // Fetch product details if product selected
     if ($selectedProduct) {
-        $stmt = $pdo->prepare("SELECT * FROM products WHERE product_id = ?");
+        $stmt = $pdo->prepare("SELECT * FROM products WHERE product_id = ? AND stock_quantity > 0");
         $stmt->execute([$selectedProduct]);
         $productDetails = $stmt->fetch(PDO::FETCH_ASSOC);
     }

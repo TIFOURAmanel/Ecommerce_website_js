@@ -77,3 +77,12 @@ CREATE TABLE cancelled_orders (
     FOREIGN KEY (order_id) REFERENCES orders(order_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
+
+-- une table pour stocker les erreurs
+CREATE TABLE IF NOT EXISTS order_errors (
+    error_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    order_id INT,
+    error_message VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

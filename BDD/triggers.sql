@@ -23,6 +23,7 @@ FOR EACH ROW
 BEGIN
     DECLARE available_stock INT;
     DECLARE order_exists INT;
+    DECLARE user_id_var INT;
     
     -- Vérifier si la commande existe
     SELECT COUNT(*) INTO order_exists
@@ -34,14 +35,23 @@ BEGIN
     FROM products
     WHERE product_id = NEW.product_id;
     
+    -- Récupérer l'ID utilisateur
+    SELECT user_id INTO user_id_var
+    FROM orders
+    WHERE order_id = NEW.order_id;
+
     IF NEW.quantity > available_stock THEN
+        -- Enregistrer l'erreur
+        INSERT INTO order_errors (user_id, order_id, error_message)
+        VALUES (user_id_var, NEW.order_id, 'Quantity requested exceeds available stock');
+        
         -- Supprimer la commande si elle existe
         IF order_exists > 0 THEN
             DELETE FROM orders WHERE order_id = NEW.order_id;
         END IF;
         
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Quantité demandée supérieure au stock disponible. La commande a été annulée.';
+        SET MESSAGE_TEXT = 'Quantity requested exceeds available stock. order cancelled .';
     END IF;
 END //
 

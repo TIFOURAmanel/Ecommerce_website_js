@@ -18,6 +18,10 @@ if (!empty($_SESSION['basket'])) {
         $itemCount += $item['quantity'];
     }
 }
+if (isset($_SESSION['error'])) {
+    echo "<script>alert('".addslashes($_SESSION['error'])."');</script>";
+    unset($_SESSION['error']);
+}
 $total = $subtotal + $deliveryFee;
 ?>
 <!DOCTYPE html>
