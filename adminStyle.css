@@ -339,6 +339,53 @@ table th {
   padding-top: 15px;
   border-top: 1px solid #f4e9e3;
 }
+/* Style pour le modal des détails de commande */
+.order-summary {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.summary-row span:first-child {
+    font-weight: bold;
+}
+
+.order-products-container {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.order-product {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    align-items: center;
+}
+
+.order-product .product-image {
+    width: 80px;
+    height: 80px;
+}
+
+.order-product .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.order-product .product-info {
+    flex: 1;
+}
+
 
 /* Responsive Styles */
 @media (max-width: 1200px) {
