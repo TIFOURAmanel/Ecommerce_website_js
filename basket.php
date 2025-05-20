@@ -34,7 +34,7 @@ $total = $subtotal + $deliveryFee;
     <link rel="stylesheet" href="basket_Style.css">
      <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Italianno&display=swap" rel="stylesheet">
-    <meta http-equiv="refresh" content="3">
+    
 </head>
 
 <body>

@@ -4,6 +4,7 @@ require_once('connection.php');
 
 // Handle form submissions
 $pdo = getConnection();
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['add_product'])) {
         // Add product to database
@@ -75,8 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$_POST['user_id']]);
     }
 
-    if (isset($_GET['view_order'])) {
-        $orderId = $_GET['view_order'];
+    if (isset($_POST['view_order'])) {
+        $orderId = $_POST['view_order'];
         $orderDetails = $pdo->prepare("
         SELECT oi.*, p.name_prod, p.price, p.image_url 
         FROM order_items oi
@@ -86,6 +87,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $orderDetails->execute([$orderId]);
         $orderProducts = $orderDetails->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    if (isset($_POST['change_password'])) {
+        $current = $_POST['current_password'];
+        $new = $_POST['new_password'];
+        $confirm = $_POST['confirm_password'];
+
+        // Récupère le mot de passe hashé depuis la BDD
+        $stmt = $pdo->prepare("SELECT password_hash FROM users WHERE user_id = ?");
+        $stmt->execute([$_SESSION['user_id']]);
+        $user = $stmt->fetch();
+
+        if (!$user || !password_verify($current, $user['password_hash'])) {
+            echo "<script>document.getElementById('password-message').innerHTML = 'Current password is incorrect';</script>";
+        } elseif ($new !== $confirm) {
+            echo "<script>document.getElementById('password-message').innerHTML = 'New passwords do not match';</script>";
+        } else {
+            // Hasher et mettre à jour
+            $hashed = password_hash($new, PASSWORD_BCRYPT);
+            $stmt = $pdo->prepare("UPDATE users SET password_hash = ? WHERE user_id = ?");
+            $stmt->execute([$hashed, $_SESSION['user_id']]);
+            echo "<script>document.getElementById('password-message').innerHTML = 'Password updated successfully';</script>";
+        }
+    }
+
 }
 
 // Fetch data from database
@@ -118,11 +143,12 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="adminStyle.css">
+    <link rel="stylesheet" href="admin_Style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <body>
+
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-header">
@@ -161,7 +187,7 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="#" onclick="showSection('settings-section')">
                     <i class="fas fa-cog"></i>
                     <span>Settings</span>
                 </a>
@@ -228,8 +254,8 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
                         <i class="fas fa-dollar-sign"></i>
                     </div>
                     <div class="card-body">
-                        <h2>$12,345</h2>
-                        <p>+$1,234 this week</p>
+                        <h2>0 da</h2>
+                        <p>+1,234 da this week</p>
                     </div>
                 </div>
             </div>
@@ -370,7 +396,7 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
                             <th>Customer</th>
                             <th>Date</th>
                             <th>Total</th>
-                            <th>Status</th>
+                            <th>State</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -382,7 +408,16 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
                                 <td><?= date('M j, Y', strtotime($order['order_date'])) ?></td>
                                 <td><?= number_format($order['total_amount'], 2) ?>da</td>
                                 <td>
-                                    <span class="status active">Completed</span>
+                                    <?php
+                                    $statusClass = '';
+                                    if ($order['state'] === 'active') {
+                                        $statusClass = 'active';
+                                    } elseif ($order['state'] === 'cancelled') {
+                                        $statusClass = 'inactive';
+                                    }
+                                    ?>
+                                    <span
+                                        class="status <?= htmlspecialchars($statusClass) ?>"><?= htmlspecialchars($order['state']) ?></span>
                                 </td>
                                 <td>
                                     <button class="action-btn view-btn" onclick="viewOrderDetails(
@@ -447,8 +482,62 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
                 </table>
             </div>
         </div>
+        <!-- Settings Section -->
+        <div id="settings-section" class="content-section" style="display:none;">
+            <div class="settings-container">
+                <h2><i class="fas fa-cog"></i> Dashboard Settings</h2>
+
+                <div class="settings-card">
+                    <h3><i class="fas fa-user-shield"></i> Account Settings</h3>
+                    <div class="form-group">
+                        <form id="change-password-form" method="POST">
+                            <label>Current Password</label>
+                            <input type="password" name="current_password" placeholder="Current password" required>
+
+                            <label>New Password</label>
+                            <input type="password" name="new_password" placeholder="New password" required>
+
+                            <label>Confirm New Password</label>
+                            <input type="password" name="confirm_password" placeholder="Confirm new password" required>
+
+                            <button type="submit" name="change_password" class="btn-save">Update Password</button>
+                            <div id="password-message"></div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h3><i class="fas fa-palette"></i> Theme Preferences</h3>
+                    <div class="theme-options">
+                        <div class="theme-option light-theme" onclick="changeTheme('light')"></div>
+                        <div class="theme-option dark-theme" onclick="changeTheme('dark')"></div>
+                        <div class="theme-option blue-theme" onclick="changeTheme('blue')"></div>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h3><i class="fas fa-bell"></i> Notification Settings</h3>
+                    <div class="form-group">
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider round"></span>
+                            <span>Email Notifications</span>
+                        </label>
+
+                        <label class="switch">
+                            <input type="checkbox">
+                            <span class="slider round"></span>
+                            <span>Push Notifications</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
     </div>
+
+
 
     <!-- Add Product Modal -->
     <div class="modal" id="product-modal">
@@ -621,7 +710,7 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
 
                 <h4>Products in this order:</h4>
                 <div class="order-products-container" id="order-products-list">
-                    <!-- Les produits seront insérés ici par JavaScript -->
+
                 </div>
             </div>
             <div class="modal-footer">
@@ -799,9 +888,32 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
             if (e.target === editCategoryModal) {
                 editCategoryModal.style.display = 'none';
             }
-            if (e.target === orderDetailsModal) { 
+            if (e.target === orderDetailsModal) {
                 orderDetailsModal.style.display = 'none';
             }
+        });
+        function changeTheme(theme) {
+            document.body.className = theme + '-theme';
+            localStorage.setItem('adminTheme', theme);
+        }
+        // Password Form Handling
+        document.getElementById('change-password-form')?.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+
+            fetch(window.location.href, {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.text())
+                .then(data => {
+                    // The PHP will handle the response via the script tags we echo
+                    this.reset();
+                })
+                .catch(error => {
+                    document.getElementById('password-message').textContent = 'Error: ' + error;
+                });
         });
     </script>
 </body>
