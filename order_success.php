@@ -47,7 +47,7 @@ try {
                     <h3>Order Details</h3>
                     <p><strong>Date:</strong> <?= date('F j, Y', strtotime($order['order_date'])) ?></p>
                     <p><strong>Delivery to:</strong> <?= htmlspecialchars($order['address']) ?></p>
-                    <p><strong>Total:</strong> $<?= number_format($order['total_amount'], 2) ?></p>
+                    <p><strong>Total:</strong> <?= number_format($order['total_amount'], 2) ?>da</p>
                 </div>
             </div>
         <?php else: ?>

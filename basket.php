@@ -34,7 +34,7 @@ $total = $subtotal + $deliveryFee;
     <link rel="stylesheet" href="basket_Style.css">
      <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Italianno&display=swap" rel="stylesheet">
-    <meta http-equiv="refresh" content="5">
+    <meta http-equiv="refresh" content="3">
 </head>
 
 <body>
@@ -107,15 +107,15 @@ $total = $subtotal + $deliveryFee;
                         <div class="summary-details">
                             <div class="summary-row">
                                 <span>Subtotal (<?= $itemCount ?> items)</span>
-                                <span>$<?= number_format($subtotal, 2) ?></span>
+                                <span><?= number_format($subtotal, 2) ?> da</span>
                             </div>
                             <div class="summary-row">
                                 <span>Delivery</span>
-                                <span>$<?= number_format($deliveryFee, 2) ?></span>
+                                <span><?= number_format($deliveryFee, 2) ?> da</span>
                             </div>
                             <div class="summary-row total">
                                 <span>Total</span>
-                                <span>$<?= number_format($total, 2) ?></span>
+                                <span><?= number_format($total, 2) ?> da</span>
                             </div>
                         </div>
                         <div class="checkout-section">

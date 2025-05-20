@@ -184,15 +184,15 @@ $total = $totalAmount + $deliveryFee;
 
                 <div class="summary-row">
                     <span>Subtotal (<?= $itemCount ?> items)</span>
-                    <span>$<?= number_format($subtotal, 2) ?></span>
+                    <span><?= number_format($subtotal, 2) ?>da</span>
                 </div>
                 <div class="summary-row">
                     <span>Delivery</span>
-                    <span>$<?= number_format($deliveryFee, 2) ?></span>
+                    <span><?= number_format($deliveryFee, 2) ?>da</span>
                 </div>
                 <div class="summary-row total">
                     <span>Total</span>
-                    <span>$<?= number_format($total, 2) ?></span>
+                    <span><?= number_format($total, 2) ?>da</span>
                 </div>
             </div>
 
@@ -211,7 +211,6 @@ $total = $totalAmount + $deliveryFee;
 
     <?php include('footer.php'); ?>
 
-    <?php include('footer.php'); ?>
 </body>
 
 </html>
