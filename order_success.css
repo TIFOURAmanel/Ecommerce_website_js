@@ -14,7 +14,7 @@
         }
 
         .confirmation-success h2 {
-            font-family: "Italianno", cursive;
+            font-family: "Playfair Display", serif;
             font-size: 2.5rem;
             margin-bottom: 1rem;
             color: var(--primary-color);
@@ -30,7 +30,7 @@
         }
 
         .order-details h3 {
-            font-family: "Montserrat", sans-serif;
+            font-family: "Playfair Display", serif;
             color: var(--primary-color);
             margin-bottom: 1rem;
             font-size: 1.3rem;

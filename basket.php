@@ -31,9 +31,10 @@ $total = $subtotal + $deliveryFee;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Basket - Meuble Confort</title>
-    <link rel="stylesheet" href="basketStyle.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="basket_Style.css">
+     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Italianno&display=swap" rel="stylesheet">
+    <meta http-equiv="refresh" content="5">
 </head>
 
 <body>

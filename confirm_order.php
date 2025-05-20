@@ -53,6 +53,9 @@ $total = $totalAmount + $deliveryFee;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Confirmation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Italianno&display=swap" rel="stylesheet">
+
     <style>
         :root {
             --primary-color: #461c03;
@@ -65,7 +68,7 @@ $total = $totalAmount + $deliveryFee;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: "Playfair Display", serif;
             line-height: 1.6;
             color: var(--text-dark);
             margin: 0;

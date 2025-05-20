@@ -206,10 +206,10 @@ checkRememberMe();
                 <input type="password" id="signin-password" name="password" placeholder="Enter your password" required>
             </div>
 
-            <div class="input-group remember-me">
+            <!-- <div class="input-group remember-me">
                 <input type="checkbox" id="remember" name="remember">
                 <label for="remember">Remember me</label>
-            </div>
+            </div> -->
 
             <button type="submit" class="auth-button">Sign In</button>
 

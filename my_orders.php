@@ -14,7 +14,7 @@ $userId = $_SESSION['user_id'];
 $stmt = $pdo->prepare("CALL AfficherHistoriqueCommandes(?)");
 $stmt->execute([$userId]);
 $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
-$stmt->closeCursor(); // Required when calling stored procedures
+$stmt->closeCursor(); 
 
 ?>
 <!DOCTYPE html>
@@ -23,7 +23,10 @@ $stmt->closeCursor(); // Required when calling stored procedures
 <head>
     <meta charset="UTF-8">
     <title>My Orders</title>
-    <link rel="stylesheet" href="order.css">
+    <link rel="stylesheet" href="my_order.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Italianno&display=swap" rel="stylesheet">
+
 </head>
 
 <body>

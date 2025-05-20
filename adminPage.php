@@ -799,7 +799,7 @@ $totalRevenue = $pdo->query("SELECT SUM(oi.quantity * p.price) FROM order_items 
             if (e.target === editCategoryModal) {
                 editCategoryModal.style.display = 'none';
             }
-            if (e.target === orderDetailsModal) { // Ajouté
+            if (e.target === orderDetailsModal) { 
                 orderDetailsModal.style.display = 'none';
             }
         });

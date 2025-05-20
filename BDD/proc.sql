@@ -155,7 +155,7 @@ BEGIN
     
     SET v_order_id = LAST_INSERT_ID();
     
-    -- Process cart items directly without cursor (more efficient)
+    -- Process cart items directly without cursor 
     INSERT INTO order_items (order_id, product_id, quantity)
     SELECT v_order_id, product_id, quantity
     FROM cart_items 

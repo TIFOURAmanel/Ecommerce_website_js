@@ -14,7 +14,7 @@
   
   /* Base Styles */
   body {
-    font-family: 'Montserrat', sans-serif;
+    font-family: "Playfair Display", serif;
     background-color: var(--gray-light);
     padding: 2rem;
   }
